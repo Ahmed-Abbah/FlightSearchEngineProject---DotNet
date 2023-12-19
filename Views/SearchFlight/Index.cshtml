@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Flight Destinations";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (ViewData["ApiData"] != null)
+{
+    <h2>API Response:</h2>
+    <p>@ViewData["ApiData"]</p>
+}
+else if (ViewData["ApiError"] != null)
+{
+    <h2>API Error:</h2>
+    <p>@ViewData["ApiError"]</p>
+}
+else
+{
+    <p>No data available.</p>
+}
