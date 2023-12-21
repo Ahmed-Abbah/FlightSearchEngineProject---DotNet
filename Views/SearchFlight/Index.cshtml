@@ -1,20 +1,521 @@
-﻿@{
-    ViewData["Title"] = "Flight Destinations";
-}
+﻿@model List<FlightsSearchEngineProject.Models.FlightDestinationModel>
 
-<h1>@ViewData["Title"]</h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
 
-@if (ViewData["ApiData"] != null)
-{
-    <h2>API Response:</h2>
-    <p>@ViewData["ApiData"]</p>
-}
-else if (ViewData["ApiError"] != null)
-{
-    <h2>API Error:</h2>
-    <p>@ViewData["ApiError"]</p>
-}
-else
-{
-    <p>No data available.</p>
-}
+    <!-- 
+      - custom css link
+    -->
+   
+    <!-- 
+      - google font link
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Comforter+Brush&family=Heebo:wght@400;500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="~/css/styles.css" />
+    <title>Web Design Mastery | Flivan</title>
+  </head>
+  <body>
+    <nav>
+      <div class="nav__logo">Flivan</div>
+      <ul class="nav__links">
+        <li class="link"><a href="#">Home</a></li>
+        <li class="link"><a href="#">About</a></li>
+        <li class="link"><a href="#">Offers</a></li>
+        <li class="link"><a href="#">Seats</a></li>
+        <li class="link"><a href="#">Destinations</a></li>
+      </ul>
+      <button class="btn">Contact</button>
+    </nav>
+    <header class="section__container header__container">
+      <h1 class="section__header">Find And Book<br />A Great Experience</h1>
+        <img src="~/assets/header.jpg" alt="header" />
+    </header>
+
+    <section class="section__container booking__container">
+      <div class="booking__nav">
+        <span>Economy Class</span>
+        <span>Business Class</span>
+        <span>First Class</span>
+      </div>
+      <form>
+        <div class="form__group">
+          <span><i class="ri-map-pin-line"></i></span>
+          <div class="input__content">
+            <div class="input__group">
+              <input type="text" />
+              <label>Location</label>
+            </div>
+            <p>Where are you goung?</p>
+          </div>
+        </div>
+        <div class="form__group">
+          <span><i class="ri-user-3-line"></i></span>
+          <div class="input__content">
+            <div class="input__group">
+              <input type="number" />
+              <label>Travellers</label>
+            </div>
+            <p>Add guests</p>
+          </div>
+        </div>
+        <div class="form__group">
+          <span><i class="ri-calendar-line"></i></span>
+          <div class="input__content">
+            <div class="input__group">
+              <input type="text" />
+              <label>Departure</label>
+            </div>
+            <p>Add date</p>
+          </div>
+        </div>
+        <div class="form__group">
+          <span><i class="ri-calendar-line"></i></span>
+          <div class="input__content">
+            <div class="input__group">
+              <input type="text" />
+              <label>Return</label>
+            </div>
+            <p>Add date</p>
+          </div>
+        </div>
+        <button class="btn"><i class="ri-search-line"></i></button>
+      </form>
+    </section>
+    <section class="section popular">
+        <div class="container">
+
+            <p class="section-subtitle">Our offers</p>
+
+            <h2 class="h2 section-title">Test Results </h2>
+
+            
+            @if (Model != null && Model.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Origin</th>
+                            <th>Destination</th>
+                            <th>Departure Date</th>
+                            <th>Return Date</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var flight in Model)
+                        {
+                            <tr>
+                                <td>@flight.Origin</td>
+                                <td>@flight.Destination</td>
+                                <td>@flight.DepartureDate</td>
+                                <td>@flight.ReturnDate</td>
+                                <td>@flight.Price.Total</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No data available</p>
+            }
+
+        </div>
+    </section>
+    <section class="section popular">
+      <div class="container">
+
+        <p class="section-subtitle">Our offers</p>
+
+        <h2 class="h2 section-title">Reserch Results </h2>
+
+        <ul class="popular-list">
+
+          <li>
+            <div class="popular-card">
+
+              <figure class="card-banner">
+                <a href="#">
+                                <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
+                    alt="Kuala Lumpur, Malaysia" class="img-cover">
+                </a>
+
+                <span class="card-badge">
+                  <ion-icon name="time-outline"></ion-icon>
+
+                  <time datetime="P12D">12 Days</time>
+                </span>
+              </figure>
+
+              <div class="card-content">
+
+                <div class="card-wrapper">
+                  <div class="card-price">From $50.00</div>
+
+                </div>
+
+                <h3 class="card-title">
+                  <a href="#">A good traveler has no fixed plans and is not intent on arriving.</a>
+                </h3>
+
+                <address class="card-location">Kuala Lumpur, Malaysia</address>
+
+              </div>
+
+            </div>
+          </li>
+
+          <li>
+            <div class="popular-card">
+
+              <figure class="card-banner">
+                <a href="#">
+                                <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
+                    alt="Kuala Lumpur, Malaysia" class="img-cover">
+                </a>
+
+                <span class="card-badge">
+                  <ion-icon name="time-outline"></ion-icon>
+
+                  <time datetime="P12D">12 Days</time>
+                </span>
+              </figure>
+
+              <div class="card-content">
+
+                <div class="card-wrapper">
+                  <div class="card-price">From $50.00</div>
+
+                
+                </div>
+
+                <h3 class="card-title">
+                  <a href="#">A good traveler has no fixed plans and is not intent on arriving.</a>
+                </h3>
+
+                <address class="card-location">Kuala Lumpur, Malaysia</address>
+
+              </div>
+
+            </div>
+          </li>
+
+          <li>
+            <div class="popular-card">
+
+              <figure class="card-banner">
+                <a href="#">
+                                <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
+                    alt="Kuala Lumpur, Malaysia" class="img-cover">
+                </a>
+
+                <span class="card-badge">
+                  <ion-icon name="time-outline"></ion-icon>
+
+                  <time datetime="P12D">12 Days</time>
+                </span>
+              </figure>
+
+              <div class="card-content">
+
+                <div class="card-wrapper">
+                  <div class="card-price">From $50.00</div>
+
+            
+                </div>
+
+                <h3 class="card-title">
+                  <a href="#">A good traveler has no fixed plans and is not intent on arriving.</a>
+                </h3>
+
+                <address class="card-location">Kuala Lumpur, Malaysia</address>
+
+              </div>
+
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+    </section>
+
+    <section class="section about">
+      <div class="container">
+
+        <div class="about-content">
+
+          <p class="section-subtitle">About Us</p>
+
+          <h2 class="h2 section-title">Explore all tour of the world with us.</h2>
+
+          <p class="about-text">
+            Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or
+            randomised words
+            which don't look even slightly believable.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+
+              <div class="about-item-icon">
+                <ion-icon name="compass"></ion-icon>
+              </div>
+
+              <div class="about-item-content">
+                <h3 class="h3 about-item-title">Tour guide</h3>
+
+                <p class="about-item-text">
+                  Lorem Ipsum available, but the majority have suffered alteration in some.
+                </p>
+              </div>
+
+            </li>
+
+            <li class="about-item">
+
+              <div class="about-item-icon">
+                <ion-icon name="briefcase"></ion-icon>
+              </div>
+
+              <div class="about-item-content">
+                <h3 class="h3 about-item-title">Friendly price</h3>
+
+                <p class="about-item-text">
+                  Lorem Ipsum available, but the majority have suffered alteration in some.
+                </p>
+              </div>
+
+            </li>
+
+            <li class="about-item">
+
+              <div class="about-item-icon">
+                <ion-icon name="umbrella"></ion-icon>
+              </div>
+
+              <div class="about-item-content">
+                <h3 class="h3 about-item-title">Reliable tour</h3>
+
+                <p class="about-item-text">
+                  Lorem Ipsum available, but the majority have suffered alteration in some.
+                </p>
+              </div>
+
+            </li>
+
+          </ul>
+
+
+
+        </div>
+
+        <figure class="about-banner">
+                <img src="~/assets/images/about-banner.png" width="756" height="842" loading="lazy" alt="" class="w-100">
+        </figure>
+
+      </div>
+    </section>
+
+
+    <section class="section blog">
+      <div class="container">
+
+        <p class="section-subtitle">TRAVEL SUPPORT</p>
+
+        <h2 class="h2 section-title">Plan your travel with confidence</h2>
+
+       
+        <div class="plan__grid">
+          <div class="plan__content">
+            <span class="number">01</span>
+            <h4>Travel Requirements for Dubai</h4>
+            <p>
+              Stay informed and prepared for your trip to Dubai with essential
+              travel requirements, ensuring a smooth and hassle-free experience in
+              this vibrant and captivating city.
+            </p>
+            <span class="number">02</span>
+            <h4>Multi-risk travel insurance</h4>
+            <p>
+              Comprehensive protection for your peace of mind, covering a range of
+              potential travel risks and unexpected situations.
+            </p>
+            <span class="number">03</span>
+            <h4>Travel Requirements by destinations</h4>
+            <p>
+              Stay informed and plan your trip with ease, as we provide up-to-date
+              information on travel requirements specific to your desired
+              destinations.
+            </p>
+          </div>
+          <div class="plan__image">
+            <img src="~/assets/plan-1.jpg" alt="plan" />
+            <img src="~/assets/plan-2.jpg" alt="plan" />
+                    <img src="~/assets/plan-3.jpg" alt="plan" />
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+
+  
+    <section class="subscribe">
+      <div class="section__container subscribe__container">
+       
+      </div>
+    </section>
+
+    
+  @* <footer class="footer" style="background-image: url('./assets/images/footer-bg.png')">
+    <div class="container">
+
+      <div class="footer-top">
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title">Top destination</p>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Indonesia, Jakarta</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Maldives, Malé</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Australia, Canberra</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Thailand, Bangkok</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Morocco, Rabat</a>
+          </li>
+
+        </ul>
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title">Categories</p>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Travel</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Lifestyle</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Fashion</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Education</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Food & Drink</a>
+          </li>
+
+        </ul>
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title">Quick links</p>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">About</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Contact</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Tours</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Booking</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Terms & Conditions</a>
+          </li>
+
+        </ul>
+
+        <div class="footer-list">
+
+          <p class="footer-list-title">Get a newsletter</p>
+
+          <p class="newsletter-text">
+            For the latest deals and tips, travel no further than your inbox
+          </p>
+
+         
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+
+        <a href="#" class="logo">Tourest</a>
+
+        <p class="copyright">
+          &copy; 2022 <a href="#" class="copyright-link">codewithsadee</a>. All Rights Reserved
+        </p>
+
+      </div>
+
+    </div>
+  </footer>
+ *@
+  <a href="#top" class="go-top" data-go-top aria-label="Go To Top">
+    <ion-icon name="chevron-up-outline"></ion-icon>
+  </a>
+
+
+
+
+
+  <!-- 
+    - custom js link
+  -->
+    <script src="~/js/script.js"></script>
+
+  <!-- 
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  </body>
+</html>
+
