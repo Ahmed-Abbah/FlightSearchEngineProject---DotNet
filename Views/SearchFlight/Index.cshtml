@@ -1,4 +1,4 @@
-﻿@model List<FlightsSearchEngineProject.Models.FlightDestinationModel>
+﻿@model List<ApiToken.Models.ApiTokenModel>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -93,39 +93,46 @@
         <button class="btn"><i class="ri-search-line"></i></button>
       </form>
     </section>
+   
     <section class="section popular">
         <div class="container">
 
             <p class="section-subtitle">Our offers</p>
 
-            <h2 class="h2 section-title">Test Results </h2>
+            <h2 class="h2 section-title">Research Results </h2>
 
-            
             @if (Model != null && Model.Any())
             {
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Origin</th>
-                            <th>Destination</th>
-                            <th>Departure Date</th>
-                            <th>Return Date</th>
-                            <th>Total Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var flight in Model)
-                        {
-                            <tr>
-                                <td>@flight.Origin</td>
-                                <td>@flight.Destination</td>
-                                <td>@flight.DepartureDate</td>
-                                <td>@flight.ReturnDate</td>
-                                <td>@flight.Price.Total</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <ul class="popular-list">
+                    @foreach (var flight in Model)
+                    {
+                        <li>
+                            <div class="popular-card">
+                                <figure class="card-banner">
+                                    <!-- You can customize the image source based on your flight data -->
+                                    <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
+                                         alt="Flight Image" class="img-cover">
+                                    <span class="card-badge">
+                                        <ion-icon name="time-outline"></ion-icon>
+                                        <time datetime="@flight.DepartureDate">@flight.DepartureDate</time>
+                                    </span>
+                                </figure>
+
+                                <div class="card-content">
+                                    <div class="card-wrapper">
+                                        <div class="card-price">From $@flight.Price.Total</div>
+                                    </div>
+
+                                    <h3 class="card-title">
+                                        <a href="#">@flight.Origin to @flight.Destination</a>
+                                    </h3>
+
+                                    <address class="card-location">Return Date : @flight.ReturnDate</address>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
             }
             else
             {
@@ -134,123 +141,8 @@
 
         </div>
     </section>
-    <section class="section popular">
-      <div class="container">
 
-        <p class="section-subtitle">Our offers</p>
-
-        <h2 class="h2 section-title">Reserch Results </h2>
-
-        <ul class="popular-list">
-
-          <li>
-            <div class="popular-card">
-
-              <figure class="card-banner">
-                <a href="#">
-                                <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
-                    alt="Kuala Lumpur, Malaysia" class="img-cover">
-                </a>
-
-                <span class="card-badge">
-                  <ion-icon name="time-outline"></ion-icon>
-
-                  <time datetime="P12D">12 Days</time>
-                </span>
-              </figure>
-
-              <div class="card-content">
-
-                <div class="card-wrapper">
-                  <div class="card-price">From $50.00</div>
-
-                </div>
-
-                <h3 class="card-title">
-                  <a href="#">A good traveler has no fixed plans and is not intent on arriving.</a>
-                </h3>
-
-                <address class="card-location">Kuala Lumpur, Malaysia</address>
-
-              </div>
-
-            </div>
-          </li>
-
-          <li>
-            <div class="popular-card">
-
-              <figure class="card-banner">
-                <a href="#">
-                                <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
-                    alt="Kuala Lumpur, Malaysia" class="img-cover">
-                </a>
-
-                <span class="card-badge">
-                  <ion-icon name="time-outline"></ion-icon>
-
-                  <time datetime="P12D">12 Days</time>
-                </span>
-              </figure>
-
-              <div class="card-content">
-
-                <div class="card-wrapper">
-                  <div class="card-price">From $50.00</div>
-
-                
-                </div>
-
-                <h3 class="card-title">
-                  <a href="#">A good traveler has no fixed plans and is not intent on arriving.</a>
-                </h3>
-
-                <address class="card-location">Kuala Lumpur, Malaysia</address>
-
-              </div>
-
-            </div>
-          </li>
-
-          <li>
-            <div class="popular-card">
-
-              <figure class="card-banner">
-                <a href="#">
-                                <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
-                    alt="Kuala Lumpur, Malaysia" class="img-cover">
-                </a>
-
-                <span class="card-badge">
-                  <ion-icon name="time-outline"></ion-icon>
-
-                  <time datetime="P12D">12 Days</time>
-                </span>
-              </figure>
-
-              <div class="card-content">
-
-                <div class="card-wrapper">
-                  <div class="card-price">From $50.00</div>
-
-            
-                </div>
-
-                <h3 class="card-title">
-                  <a href="#">A good traveler has no fixed plans and is not intent on arriving.</a>
-                </h3>
-
-                <address class="card-location">Kuala Lumpur, Malaysia</address>
-
-              </div>
-
-            </div>
-          </li>
-
-        </ul>
-
-      </div>
-    </section>
+    
 
     <section class="section about">
       <div class="container">

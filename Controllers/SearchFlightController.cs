@@ -3,11 +3,11 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using RestSharp;
 using ApiToken.Models;
-using FlightsSearchEngineProject.Models;
-using RestSharp.Authenticators;
-using System.Text;
-using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using FlightsSearchEngineProject.Models;
+using System.Text;
 
 namespace FlightsSearchEngineProject.Controllers
 {
@@ -50,11 +50,15 @@ namespace FlightsSearchEngineProject.Controllers
                     string content = await response.Content.ReadAsStringAsync();
                     Console.WriteLine("Received JSON content: " + content);
 
-                    // Deserialize the JSON content into a FlightDestinationModel
-                    var flightDestinations = JsonConvert.DeserializeObject<List<FlightDestinationModel>>(content);
+                    // Deserialize the JSON content into a FlightDestinationsResponse
+                    var responseModel = JsonConvert.DeserializeObject<FlightDestinationsResponse>(content);
 
-                    // Store the list of FlightDestinationModel data in the ViewData dictionary
-                    ViewData["FlightDestinations"] = flightDestinations;
+                    // Check if the responseModel has data
+                    if (responseModel?.Data != null && responseModel.Data.Any())
+                    {
+                        // Pass the list of ApiTokenModel to the view
+                        return View(responseModel.Data);
+                    }
                 }
                 else
                 {
@@ -66,8 +70,10 @@ namespace FlightsSearchEngineProject.Controllers
                 ViewData["ApiError"] = $"Exception: {ex.Message}";
             }
 
-            return View();
+            // If something goes wrong, return the view with an empty list
+            return View(new List<ApiTokenModel>());
         }
+
 
         // Helper method to obtain or refresh the Bearer token
         [Obsolete]

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace ApiToken.Models
 {
@@ -30,12 +31,46 @@ namespace ApiToken.Models
 
         [JsonProperty("scope")]
         public string Scope { get; set; }
+
         public DateTime CreateTime { get; init; }
         public DateTime ExpirationTime => CreateTime.AddSeconds(ExpiresIn).ToLocalTime();
+
+        [JsonProperty("origin")]
+        public string Origin { get; set; }
+
+        [JsonProperty("destination")]
+        public string Destination { get; set; }
+
+        [JsonProperty("departureDate")]
+        public string DepartureDate { get; set; }
+
+        [JsonProperty("returnDate")]
+        public string ReturnDate { get; set; }
+
+        [JsonProperty("price")]
+        public PriceModel Price { get; set; }
+
+        [JsonProperty("links")]
+        public LinksModel Links { get; set; }
 
         public ApiTokenModel()
         {
             CreateTime = DateTime.Now;
+        }
+
+        public class PriceModel
+        {
+            [JsonProperty("total")]
+            public string Total { get; set; }
+        }
+
+        public class LinksModel
+        {
+            [JsonProperty("flightDates")]
+            public string FlightDates { get; set; }
+
+            [JsonProperty("flightOffers")]
+            public string FlightOffers { get; set; }
         }
     }
 }
