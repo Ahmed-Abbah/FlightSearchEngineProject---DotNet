@@ -44,54 +44,81 @@
     </header>
 
     <section class="section__container booking__container">
-      <div class="booking__nav">
-        <span>Economy Class</span>
-        <span>Business Class</span>
-        <span>First Class</span>
-      </div>
-      <form>
-        <div class="form__group">
-          <span><i class="ri-map-pin-line"></i></span>
-          <div class="input__content">
-            <div class="input__group">
-              <input type="text" />
-              <label>Location</label>
-            </div>
-            <p>Where are you goung?</p>
-          </div>
+        <div class="booking__nav">
+            <span>Rechercher votre vol maintenant</span>
         </div>
-        <div class="form__group">
-          <span><i class="ri-user-3-line"></i></span>
-          <div class="input__content">
-            <div class="input__group">
-              <input type="number" />
-              <label>Travellers</label>
+        <form>
+            <div class="form__group">
+                <span><i class="ri-map-pin-line"></i></span>
+                <div class="input__content">
+                    <div class="input__group">
+                        <input type="text" id="departureCity" />
+                        <label for="departureCity">Ville de départ</label>
+                    </div>
+                    <p>Depart city</p>
+                </div>
             </div>
-            <p>Add guests</p>
-          </div>
-        </div>
-        <div class="form__group">
-          <span><i class="ri-calendar-line"></i></span>
-          <div class="input__content">
-            <div class="input__group">
-              <input type="text" />
-              <label>Departure</label>
+            <div class="form__group">
+                <span><i class="ri-map-pin-line"></i></span>
+                <div class="input__content">
+                    <div class="input__group">
+                        <input type="text" id="arrivalCity" />
+                        <label for="arrivalCity">Ville d'arrivée</label>
+                    </div>
+                    <p>Arrived City</p>
+                </div>
             </div>
-            <p>Add date</p>
-          </div>
-        </div>
-        <div class="form__group">
-          <span><i class="ri-calendar-line"></i></span>
-          <div class="input__content">
-            <div class="input__group">
-              <input type="text" />
-              <label>Return</label>
+            <div class="form__group">
+                <span><i class="ri-user-3-line"></i></span>
+                <div class="input__content">
+                    <div class="input__group">
+                        <input type="number" id="numberOfPersons" />
+                        <label for="numberOfPersons">Nombre de personnes</label>
+                    </div>
+                    <p>Add guests</p>
+                </div>
             </div>
-            <p>Add date</p>
-          </div>
-        </div>
-        <button class="btn"><i class="ri-search-line"></i></button>
-      </form>
+
+            <div class="form__group">
+                <span><i class="ri-calendar-line"></i></span>
+                <div class="input__content">
+                    <div class="input__group">
+                        <input type="date" id="departureDate" />
+                        <label for="departureDate">Date de départ</label>
+                    </div>
+                    <p>Add depart date</p>
+                </div>
+            </div>
+            <div class="form__group">
+                <span><i class="ri-calendar-line"></i></span>
+                <div class="input__content">
+                    <div class="input__group">
+                        <input type="date" id="returnDate" />
+                        <label for="returnDate">Date de Retour</label>
+                    </div>
+                    <p>Add return date</p>
+                </div>
+            </div>
+            <div class="form__group">
+                <span><i class="ri-airplane-line"></i></span>
+                <div class="input__content">
+                    <div class="input__group">
+                        <select id="classType">
+                            <option value="economy">Économique</option>
+                            <option value="business">Business</option>
+                            <!-- Ajoutez d'autres options au besoin -->
+                        </select>
+                    </div>
+                    <p style="padding-top: 30px;">
+                        <i class="ri-airplane-line"></i> Sélectionnez le type de classe
+                    </p>
+                </div>
+            </div>
+            <div class="center-button">
+                <button class="btn"><i class="ri-search-line"></i> Rechercher</button>
+            </div>
+
+        </form>
     </section>
    
     <section class="section popular">

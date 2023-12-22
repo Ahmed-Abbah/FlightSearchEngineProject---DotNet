@@ -205,6 +205,7 @@ nav {
 }
 
 .booking__container {
+    width: 1500px;
     border-radius: 2rem;
     border: 1px solid var(--extra-light);
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
@@ -237,12 +238,12 @@ nav {
 .booking__container form {
     margin-top: 4rem;
     display: grid;
-    grid-template-columns: repeat(4, 1fr) auto;
+    grid-template-columns: repeat(5, 1fr) auto;
     gap: 1rem;
 }
 
 .booking__container .input__content {
-    width: 100%;
+    width: 70%;
 }
 
 .booking__container .form__group {
@@ -637,7 +638,110 @@ nav {
         color: var(--extra-light);
     }
 
-@media (width < 1200px) {
+form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.form__group {
+    flex-basis: calc(33.33% - 20px); /* 20px de marge entre les éléments */
+    margin-bottom: 20px;
+}
+
+    .form__group span {
+        margin-right: 10px;
+    }
+
+.input__content {
+    display: flex;
+    flex-direction: column;
+}
+
+.input__group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#classType {
+    margin-bottom: -25px;
+    padding: 5px;
+    width: 150px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.center-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* You can adjust the margin as needed */
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+p {
+    font-size: 14px;
+    color: #888;
+}
+
+/* Ajout d'un style pour le bouton Rechercher */
+.btn {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .btn i {
+        margin-right: 5px;
+    }
+/* 
+.form__group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form__group span {
+  margin-right: 10px;
+}
+
+.input__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.input__group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#classType {
+  padding: 5px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+p {
+  font-size: 14px;
+  color: #888;
+} */
+@media (max-width: 1200px) {
     .section__container.header__container,
     .section__container.plan__container,
     .section__container.lounge__container {
@@ -649,7 +753,7 @@ nav {
     }
 }
 
-@media (width < 900px) {
+@media (max-width: 900px) {
     nav .btn {
         display: none;
     }
@@ -661,7 +765,7 @@ nav {
     }
 
     .booking__container form {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(6, 3fr);
     }
 
     .plan__grid {
@@ -695,7 +799,7 @@ nav {
     }
 }
 
-@media (width < 600px) {
+@media (max-width: 600px) {
     .nav__links {
         display: none;
     }
@@ -733,7 +837,6 @@ nav {
         text-align: center;
     }
 }
-
 
 
 
