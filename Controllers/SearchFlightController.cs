@@ -6,8 +6,8 @@ using ApiToken.Models;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using FlightsSearchEngineProject.Models;
 using System.Text;
+using FlightsSearchEngineProject.Models;
 
 namespace FlightsSearchEngineProject.Controllers
 {
@@ -26,13 +26,60 @@ namespace FlightsSearchEngineProject.Controllers
 
         // Action method for handling requests to /SearchFlight/Index
         // Action method for handling requests to /SearchFlight/Index
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            string apiUrl = "https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=MAD";
+            return View();
+        }
 
+        // Added
+
+        public class AmadeusLocationAutocompleteResponse
+        {
+            public Meta Meta { get; set; }
+            public List<LocationData> Data { get; set; }
+        }
+
+        public class Meta
+        {
+            public int Count { get; set; }
+            public Links Links { get; set; }
+        }
+
+        public class Links
+        {
+            public string Self { get; set; }
+        }
+
+        public class LocationData
+        {
+            public string Type { get; set; }
+            public string SubType { get; set; }
+            public string Name { get; set; }
+            public string IataCode { get; set; }
+            public Address Address { get; set; }
+            public GeoCode GeoCode { get; set; }
+        }
+
+        public class Address
+        {
+            public string CountryCode { get; set; }
+            public string StateCode { get; set; }
+            // Add other address properties as needed
+        }
+
+        public class GeoCode
+        {
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+        }
+
+
+        //
+
+        private async Task<string> GetCityCodeAsync(string cityName)
+        {
             try
             {
-                // Obtain or refresh Bearer token
                 if (string.IsNullOrEmpty(_bearerToken))
                 {
                     _bearerToken = GetAccessToken();
@@ -41,38 +88,135 @@ namespace FlightsSearchEngineProject.Controllers
                 // Set up authorization header with the Bearer token
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
 
-                // Sending a GET request to the specified API endpoint
-                HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
+                // Corrected API endpoint URL
+                var apiUrl = $"https://test.api.amadeus.com/v1/reference-data/locations/cities?keyword={cityName}";
 
-                // Check if the response is successful (status code 200)
-                if (response.IsSuccessStatusCode)
+                var response = await _httpClient.GetAsync(apiUrl);
+
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                // Output the content to the console
+                Console.WriteLine($"API Response Content: {content}");
+
+                var result = JsonConvert.DeserializeObject<AmadeusLocationAutocompleteResponse>(content);
+
+                // Filter results to include only CITY type
+                var cityResults = result.Data
+                                .Where(entry => entry.Type == "location" && entry.SubType == "city" &&
+                                                string.Equals(entry.Name, cityName, StringComparison.OrdinalIgnoreCase))
+                                .ToList();
+                Console.WriteLine($"cityResults Content: {cityResults}");
+
+                if (cityResults.Any())
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine("Received JSON content: " + content);
+                    // Assuming the first CITY result contains the city information
+                    var cityResult = cityResults.First();
 
-                    // Deserialize the JSON content into a FlightDestinationsResponse
-                    var responseModel = JsonConvert.DeserializeObject<FlightDestinationsResponse>(content);
-
-                    // Check if the responseModel has data
-                    if (responseModel?.Data != null && responseModel.Data.Any())
-                    {
-                        // Pass the list of ApiTokenModel to the view
-                        return View(responseModel.Data);
-                    }
+                    // Extract the city code or any other relevant information
+                    return cityResult.IataCode;
                 }
                 else
                 {
-                    ViewData["ApiError"] = $"Error: {response.StatusCode} - {response.ReasonPhrase}";
+                    Console.WriteLine($"No CITY result found for {cityName}");
+                    return null; // Return null or some other indication that the city code is not found
                 }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP error while autocompleting location: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON error while deserializing location autocomplete response: {ex.Message}");
             }
             catch (Exception ex)
             {
-                ViewData["ApiError"] = $"Exception: {ex.Message}";
+                Console.WriteLine($"Error while autocompleting location: {ex.Message}");
             }
 
-            // If something goes wrong, return the view with an empty list
-            return View(new List<ApiTokenModel>());
+            // Return null or some other indication if an exception occurs
+            return null;
         }
+
+
+        public async Task<IActionResult> GetFlights(FlightSearchModel searchModel)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View("Index", searchModel);
+                }
+
+                // Ensure the bearer token is available
+                if (string.IsNullOrEmpty(_bearerToken))
+                {
+                    _bearerToken = GetAccessToken();
+                }
+
+                // Set up authorization header with the Bearer token
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
+
+                var apiKey = "k7N4VAZgfMjj2AddmxGwxWJaDZ7vso3T";
+                var apiUrl = "https://test.api.amadeus.com/v2/shopping/flight-offers";
+
+                // Convert city names to city codes using Amadeus Location Autocomplete API
+                var originCityCode = await GetCityCodeAsync(searchModel.DepartureCity);
+                var destinationCityCode = await GetCityCodeAsync(searchModel.ArrivalCity);
+
+                Console.WriteLine($"Origin City Code: {originCityCode}");
+                Console.WriteLine($"Destination City Code: {destinationCityCode}");
+
+                // Construct the API request URL
+                var requestUrl = $"{apiUrl}?originLocationCode={originCityCode}&destinationLocationCode={destinationCityCode}&departureDate={searchModel.DepartureDate:yyyy-MM-dd}&returnDate={searchModel.ReturnDate:yyyy-MM-dd}&adults={searchModel.NumberOfPassengers}&travelClass={searchModel.TravelClass}&nonStop=false";
+
+                var response = await _httpClient.GetAsync(requestUrl);
+                response.EnsureSuccessStatusCode();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"API Response Content: {apiResponse}");
+
+                var responseObject = JsonConvert.DeserializeObject<Flight>(apiResponse);
+
+                // Extract the flight data from the response object
+                var flights = responseObject?.Data;
+
+                TempData["DepartureCity"] = searchModel.DepartureCity;
+                TempData["ArrivalCity"] = searchModel.ArrivalCity;
+                TempData["NumberOfPassengers"] = searchModel.NumberOfPassengers;
+                TempData["DepartureDate"] = searchModel.DepartureDate;
+                TempData["ReturnDate"] = searchModel.ReturnDate;
+                TempData["TravelClass"] = searchModel.TravelClass;
+
+
+
+                Console.WriteLine($"flights content: {flights}");
+
+                // Pass the flights data to the partial view
+                return View("Index", flights);
+
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP error while retrieving flights: {ex.Message}");
+                return BadRequest("Error while retrieving flights.");
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON error while deserializing flights: {ex.Message}");
+                return BadRequest("Error while deserializing flights.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while retrieving flights: {ex.Message}");
+                return BadRequest("Error while retrieving flights.");
+            }
+        }
+
+
 
 
         // Helper method to obtain or refresh the Bearer token
