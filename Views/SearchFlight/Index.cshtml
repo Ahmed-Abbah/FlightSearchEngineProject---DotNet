@@ -25,18 +25,12 @@
 </head>
 <body>
     <nav>
-        <div class="nav__logo">Flivan</div>
-        <ul class="nav__links">
-            <li class="link"><a href="#">Home</a></li>
-            <li class="link"><a href="#">About</a></li>
-            <li class="link"><a href="#">Offers</a></li>
-            <li class="link"><a href="#">Seats</a></li>
-            <li class="link"><a href="#">Destinations</a></li>
-        </ul>
-        <button class="btn">Contact</button>
+        <div class="nav__logo">FlySky</div>
+        
+       
     </nav>
     <header class="section__container header__container">
-        <h1 class="section__header">Find And Book<br />A Great Experience</h1>
+        <h1 class="section__header">Trouver et Réserver<br />Une Expérience Exceptionnelle</h1>
         <img src="~/assets/header.jpg" alt="header" />
     </header>
 
@@ -49,32 +43,32 @@
                 <span><i class="ri-map-pin-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="text" name="DepartureCity" id="departureCity" value="@TempData["DepartureCity"]" required />
-                        <label for="departureCity">Ville de départ</label>
+                        <input type="text" name="DepartureCity" style="margin-top: 35px;"  id="departureCity" value="@TempData["DepartureCity"]" required />
+                        <label for="departureCity" >Ville de départ</label>
                         <div id="departureSuggestions" class="suggestions-container"></div>
                     </div>
-                    <p>Depart city</p>
+                    <p>aisir la ville de départ</p>
                 </div>
             </div>
             <div class="form__group">
                 <span><i class="ri-map-pin-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="text" name="ArrivalCity" id="arrivalCity" value="@TempData["ArrivalCity"]" required />
-                        <label for="arrivalCity">Ville d'arrivée</label>
+                        <input type="text" name="ArrivalCity" style="margin-top: 35px;" id="arrivalCity" value="@TempData["ArrivalCity"]" required />
+                        <label for="arrivalCity" >Ville d'arrivée</label>
                         <div id="arrivalSuggestions" class="suggestions-container"></div>
                     </div>
-                    <p>Arrived City</p>
+                    <p>Saisir la ville d'arrivé</p>
                 </div>
             </div>
             <div class="form__group">
                 <span><i class="ri-user-3-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="number" name="NumberOfPassengers" id="numberOfPersons" value="@TempData["NumberOfPassengers"]" required />
-                        <label for="numberOfPersons">Nombre de personnes</label>
+                        <input type="number" style="margin-top: 35px;" name="NumberOfPassengers" id="numberOfPersons" value="@TempData["NumberOfPassengers"]" required />
+                        <label for="numberOfPersons">Nombre de places</label>
                     </div>
-                    <p>Add guests</p>
+                    <p>Ajouter des voyageurs</p>
                 </div>
             </div>
 
@@ -82,26 +76,26 @@
                 <span><i class="ri-calendar-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="date" name="DepartureDate" id="departureDate" value="@TempData["DepartureDate"]" required />
+                        <input type="date" style="margin-top: 35px;"  name="DepartureDate" id="departureDate" value="@TempData["DepartureDate"]" required />
                         <label for="departureDate">Date de départ</label>
                     </div>
-                    <p>Add depart date</p>
+                    <p>jouter la date de départ</p>
                 </div>
             </div>
             <div class="form__group">
                 <span><i class="ri-calendar-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="date" name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]" required />
+                        <input type="date" style="margin-top: 35px;"  name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]" required />
                         <label for="returnDate">Date de Retour</label>
                     </div>
-                    <p>Add return date</p>
+                    <p>Ajouter la date de retour</p>
                 </div>
             </div>
             <div class="form__group">
                 <span><i class="ri-airplane-line"></i></span>
                 <div class="input__content">
-                    <div class="input__group">
+                    <div class="input__group" style="margin-top: 40px;">
                         <select name="TravelClass" id="classType">
                             <option value="ECONOMY">Économique</option>
                             <option value="BUSINESS">Business</option>
@@ -110,14 +104,13 @@
                         </select>
 
                     </div>
-                    <p style="padding-top: 30px;">
+                    <p style="padding-top: 25px;">
                         <i class="ri-airplane-line"></i> Sélectionnez le type de classe
                     </p>
                 </div>
+                <button style="margin-top: 0px;" class="btn"><i class="ri-search-line"></i> </button>
             </div>
-            <div class="center-button">
-                <button class="btn"><i class="ri-search-line"></i> Rechercher</button>
-            </div>
+            
 
         </form>
     </section>
@@ -127,16 +120,53 @@
     <section class="section popular">
         <div class="container">
 
-            <p class="section-subtitle">Our offers</p>
+            <p class="section-subtitle">Nos offres</p>
 
-            <h2 class="h2 section-title">Research Results </h2>
+            <h2 class="h2 section-title"> Resultats de recherche </h2>
+
+
 
             @if (Model != null && Model.Any())
             {
-                <ul class="popular-list">
+                <div class="form__group">
+
+                    <select id="filterOptions" class="btn"  style="margin-left: 20px;">
+                        <option value="" disabled selected>Type de vol</option>
+                        <option value="all">Tous les vols</option>
+                        <option value="avec-escale">Vols avec escales</option>
+                        <option value="direct">Vols directs</option>
+                    </select>
+                    <input type="text" id="departureTime" class="btn" style="width: 180px;margin-left:10px;" placeholder="Saisir l'heure de depart Ex. 14:30" />
+                    <input type="text" id="arrivalTime" class="btn" style="width: 180px;margin-left:10px;" placeholder="Saisir l'heure d'arrivee Ex. 14:30" />
+                    
+                    <select id="filterOptions2" class="btn" style="margin-left: 10px;">
+                        <option value="" disabled selected>Prix</option>
+                        <option value="true">Croissant</option>
+                        <option value="false">Décroissant</option>
+                    </select>
+                    <select id="filterOptions3" class="btn" style="margin-left: 10px;">
+                        <option value="" disabled selected>Durée</option>
+                        <option value="true">Long to court</option>
+                        <option value="false">Court to long</option>
+                    </select>
+                   
+                
+                    <button onclick="applyFilters()" class="btn" style="background-color:hsl(47, 98%, 50%);margin-left:180px;"><i class="ri-search-line"></i> Filtrer les offres</button>
+                </div>
+              
+
+             
+
+                <ul class="popular-list" id="flightResults">
+
                     @foreach (var flight in Model)
                     {
-                        <li>
+                        @*                        <li class="flight-item" data-stops="@(flight.Itineraries.Count > 1 ? "avec-escale" : "direct")"> *@
+                        @*    <li class="flight-item" data-departure-time="@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At">
+                *@
+                        var stopsAttribute = (flight.Itineraries.Count > 1 ? "avec-escale" : "direct");
+                        <li class="flight-item" data-stops="@stopsAttribute" data-departure-time="@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At"
+                            data-arrival-time="@flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At">
                             <div class="popular-card">
                                 <figure class="card-banner">
 
@@ -152,7 +182,7 @@
 
                                 <div class="card-content">
                                     <div class="card-wrapper">
-                                        <div class="card-price">From $@flight.Price.Total @flight.Price.Currency</div>
+                                        <div class="card-price" data-price="@flight.Price.Total">From $@flight.Price.Total @flight.Price.Currency</div>
                                     </div>
 
                                     <h3 class="card-title">
@@ -160,7 +190,7 @@
                                     </h3>
 
                                     <address class="card-location">Return Date: >@flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
-                                    <p class="card-stops">@(flight.Itineraries.Count > 1 ? "With Layovers" : "Direct")</p>
+                                    <p class="card-stops">@(flight.Itineraries.Count > 1 ? "avec-escale" : "direct")</p>
                                 </div>
                             </div>
                         </li>
@@ -184,12 +214,12 @@
 
                 <p class="section-subtitle">About Us</p>
 
-                <h2 class="h2 section-title">Explore all tour of the world with us.</h2>
+                <h2 class="h2 section-title">Découvrez les merveilles du monde</h2>
 
                 <p class="about-text">
-                    Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or
-                    randomised words
-                    which don't look even slightly believable.
+                     Si notre aventure a débuté avec une passion pour
+                    l'exploration, elle s'est transformée en un engagement à fournir des expériences de voyage authentiques 
+                    et inoubliables. 
                 </p>
 
                 <ul class="about-list">
@@ -201,10 +231,14 @@
                         </div>
 
                         <div class="about-item-content">
-                            <h3 class="h3 about-item-title">Tour guide</h3>
+                            <h3 class="h3 about-item-title">
+                                Guide Touristique
+
+                            </h3>
 
                             <p class="about-item-text">
-                                Lorem Ipsum available, but the majority have suffered alteration in some.
+                                Nos guides touristiques expérimentés ne sont pas seulement des narrateurs de l'histoire ; 
+                                ce sont des conteurs qui donnent vie aux destinations.
                             </p>
                         </div>
 
@@ -217,10 +251,12 @@
                         </div>
 
                         <div class="about-item-content">
-                            <h3 class="h3 about-item-title">Friendly price</h3>
+                            <h3 class="h3 about-item-title">Prix Amicaux</h3>
 
                             <p class="about-item-text">
-                                Lorem Ipsum available, but the majority have suffered alteration in some.
+                              
+                                Nous comprenons que le voyage n'est pas seulement un déplacement, 
+                                c'est un investissement dans les souvenirs.
                             </p>
                         </div>
 
@@ -233,10 +269,11 @@
                         </div>
 
                         <div class="about-item-content">
-                            <h3 class="h3 about-item-title">Reliable tour</h3>
+                            <h3 class="h3 about-item-title">Tours Fiables</h3>
 
                             <p class="about-item-text">
-                                Lorem Ipsum available, but the majority have suffered alteration in some.
+                                Chez FlySky, la fiabilité est notre emblème.
+                                Nous planifions méticuleusement chaque tour
                             </p>
                         </div>
 
@@ -261,7 +298,7 @@
 
             <p class="section-subtitle">TRAVEL SUPPORT</p>
 
-            <h2 class="h2 section-title">Plan your travel with confidence</h2>
+            <h2 class="h2 section-title">Planifiez votre voyage en toute confiance</h2>
 
 
             <div class="plan__grid">
@@ -269,22 +306,23 @@
                     <span class="number">01</span>
                     <h4>Travel Requirements for Dubai</h4>
                     <p>
-                        Stay informed and prepared for your trip to Dubai with essential
-                        travel requirements, ensuring a smooth and hassle-free experience in
-                        this vibrant and captivating city.
+                        Exigences de voyage pour Dubaï
+                        Restez informé et préparé pour votre voyage à Dubaï grâce aux exigences de voyage essentielles,
+                        garantissant une expérience fluide et sans tracas dans cette ville dynamique et captivante.
                     </p>
                     <span class="number">02</span>
-                    <h4>Multi-risk travel insurance</h4>
+                    <h4> Assurance voyage multirisque</h4>
                     <p>
-                        Comprehensive protection for your peace of mind, covering a range of
-                        potential travel risks and unexpected situations.
+                       
+                        Une protection complète pour votre tranquillité d'esprit, 
+                        couvrant une gamme de risques potentiels de voyage et de situations inattendues.
                     </p>
                     <span class="number">03</span>
-                    <h4>Travel Requirements by destinations</h4>
+                    <h4>Exigences de voyage par destination</h4>
                     <p>
-                        Stay informed and plan your trip with ease, as we provide up-to-date
-                        information on travel requirements specific to your desired
-                        destinations.
+                        Restez informé et planifiez votre voyage en toute simplicité,
+                        car nous fournissons des informations à jour sur les exigences 
+                        de voyage spécifiques à vos destinations désirées.
                     </p>
                 </div>
                 <div class="plan__image">
@@ -331,121 +369,6 @@
 
 
 
-    @* <footer class="footer" style="background-image: url('./assets/images/footer-bg.png')">
-    <div class="container">
-
-    <div class="footer-top">
-
-    <ul class="footer-list">
-
-    <li>
-    <p class="footer-list-title">Top destination</p>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Indonesia, Jakarta</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Maldives, Malé</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Australia, Canberra</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Thailand, Bangkok</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Morocco, Rabat</a>
-    </li>
-
-    </ul>
-
-    <ul class="footer-list">
-
-    <li>
-    <p class="footer-list-title">Categories</p>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Travel</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Lifestyle</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Fashion</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Education</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Food & Drink</a>
-    </li>
-
-    </ul>
-
-    <ul class="footer-list">
-
-    <li>
-    <p class="footer-list-title">Quick links</p>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">About</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Contact</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Tours</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Booking</a>
-    </li>
-
-    <li>
-    <a href="#" class="footer-link">Terms & Conditions</a>
-    </li>
-
-    </ul>
-
-    <div class="footer-list">
-
-    <p class="footer-list-title">Get a newsletter</p>
-
-    <p class="newsletter-text">
-    For the latest deals and tips, travel no further than your inbox
-    </p>
-
-
-    </div>
-
-    </div>
-
-    <div class="footer-bottom">
-
-    <a href="#" class="logo">Tourest</a>
-
-    <p class="copyright">
-    &copy; 2022 <a href="#" class="copyright-link">codewithsadee</a>. All Rights Reserved
-    </p>
-
-    </div>
-
-    </div>
-    </footer>
-    *@
     <a href="#top" class="go-top" data-go-top aria-label="Go To Top">
         <ion-icon name="chevron-up-outline"></ion-icon>
     </a>
@@ -583,6 +506,187 @@
                 }
             });
         });
+    </script>
+    <!-- Script JavaScript -->
+    <!-- Script JavaScript -->
+    <!-- Script JavaScript -->
+    <!-- Ajoutez ceci à votre script JavaScript -->
+    <script>
+        function applyFilter1() {
+            // Récupérer la valeur sélectionnée dans le sélecteur
+            var filterOption = document.getElementById("filterOptions").value;
+
+            // Sélectionnez tous les éléments de vol
+            var flights = document.querySelectorAll('.flight-item');
+
+            // Parcourez chaque vol et filtrez en fonction de l'option sélectionnée
+            flights.forEach(function (flight) {
+                var stopsAttribute = flight.getAttribute('data-stops');
+
+                // Affichez ou masquez le vol en fonction de l'option de filtre
+                if (filterOption === 'all' || (filterOption === 'avec-escale' && stopsAttribute === 'avec-escale') || (filterOption === 'direct' && stopsAttribute === 'direct')) {
+                    flight.style.display = 'block';
+                } else {
+                    flight.style.display = 'none';
+                }
+            });
+        }
+    </script>
+    <!-- Ajoutez ceci à votre script JavaScript -->
+    <script>
+        function applyFilter2() {
+            // Récupérer l'heure saisie par l'utilisateur
+            var departureTimeInput = document.getElementById("departureTime");
+            var departureTime = departureTimeInput.value.trim();
+
+            // Sélectionnez tous les éléments de vol
+            var flights = document.querySelectorAll('.flight-item');
+
+            // Parcourez chaque vol et filtrez en fonction de l'heure de départ
+            flights.forEach(function (flight) {
+                var departureTimeAttribute = flight.getAttribute('data-departure-time');
+
+                // Affichez ou masquez le vol en fonction de l'heure de départ
+                if (departureTime === '' || departureTime === departureTimeAttribute.split('T')[1].substring(0, 5)) {
+                    flight.style.display = 'block';
+                } else {
+                    flight.style.display = 'none';
+                }
+            });
+        }
+    </script>
+    <script>
+        function applyFilter3() {
+            // Récupérer l'heure saisie par l'utilisateur
+            var arrivalTimeInput = document.getElementById("arrivalTime");
+            var arrivalTime = arrivalTimeInput.value.trim();
+
+            // Sélectionnez tous les éléments de vol
+            var flights = document.querySelectorAll('.flight-item');
+
+            // Parcourez chaque vol et filtrez en fonction de l'heure de départ
+            flights.forEach(function (flight) {
+                var arrivalTimeAttribute = flight.getAttribute('data-arrival-time');
+
+                // Affichez ou masquez le vol en fonction de l'heure de départ
+                if (arrivalTime === '' || arrivalTime === arrivalTimeAttribute.split('T')[1].substring(0, 5)) {
+                    flight.style.display = 'block';
+                } else {
+                    flight.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function applyFilters() {
+            // Récupérer la valeur sélectionnée dans le sélecteur
+            var filterOption = document.getElementById("filterOptions").value;
+
+            // Récupérer l'heure de départ saisie par l'utilisateur
+            var departureTimeInput = document.getElementById("departureTime");
+            var departureTime = departureTimeInput.value.trim();
+
+            // Récupérer l'heure d'arrivée saisie par l'utilisateur
+            var arrivalTimeInput = document.getElementById("arrivalTime");
+            var arrivalTime = arrivalTimeInput.value.trim();
+
+            // Sélectionnez tous les éléments de vol
+            var flights = document.querySelectorAll('.flight-item');
+
+            // Parcourez chaque vol et filtrez en fonction des options sélectionnées
+            flights.forEach(function (flight) {
+                var stopsAttribute = flight.getAttribute('data-stops');
+                var departureTimeAttribute = flight.getAttribute('data-departure-time');
+                var arrivalTimeAttribute = flight.getAttribute('data-arrival-time');
+
+                // Affichez ou masquez le vol en fonction des options de filtre
+                var showFlight = (filterOption === 'all' || (filterOption === 'avec-escale' && stopsAttribute === 'avec-escale') || (filterOption === 'direct' && stopsAttribute === 'direct'));
+
+                // Si l'option de filtre par heure de départ est renseignée, appliquez le filtre
+                if (departureTime !== '' && departureTime !== departureTimeAttribute.split('T')[1].substring(0, 5)) {
+                    showFlight = false;
+                }
+
+                // Si l'option de filtre par heure d'arrivée est renseignée, appliquez le filtre
+                if (arrivalTime !== '' && arrivalTime !== arrivalTimeAttribute.split('T')[1].substring(0, 5)) {
+                    showFlight = false;
+                }
+
+                // Affichez ou masquez le vol en fonction des options de filtre combinées
+                flight.style.display = showFlight ? 'block' : 'none';
+            });
+        }
+    </script>
+
+
+
+    <script>
+        function applyFilter5() {
+            // Récupérer l'heure d'arrivée saisie par l'utilisateur
+            var arrivalTimeInput = document.getElementById("arrivalTime");
+            var arrivalTime = parseTime(arrivalTimeInput.value.trim());
+
+            // Sélectionnez tous les éléments de vol
+            var flights = document.querySelectorAll('.popular-list li');
+
+            // Parcourez chaque vol et filtrez en fonction de l'heure d'arrivée
+            flights.forEach(function (flight) {
+                var arrivalTimeAttribute = flight.querySelector('.card-location').getAttribute('data-arrival-time');
+                var formattedArrivalTime = extractHour(arrivalTimeAttribute);
+
+                // Convertir l'heure d'arrivée en objet de temps
+                var flightArrivalTime = parseTime(formattedArrivalTime);
+
+                // Affichez ou masquez le vol en fonction de l'heure d'arrivée
+                if (arrivalTime.hour === -1 || compareTime(arrivalTime, flightArrivalTime)) {
+                    flight.style.display = 'block';
+                } else {
+                    flight.style.display = 'none';
+                }
+            });
+        }
+
+        function parseTime(timeString) {
+            var parts = timeString.split(':');
+            return {
+                hour: parseInt(parts[0], 10),
+                minute: parseInt(parts[1], 10)
+            };
+        }
+
+        function compareTime(time1, time2) {
+            return time1.hour === time2.hour && time1.minute === time2.minute;
+        }
+
+        function extractHour(dateTimeString) {
+            return dateTimeString.split('T')[1].substring(0, 5);
+        }
+    </script>
+    <script>
+        function applyFilter4() {
+            // Récupérer l'heure saisie par l'utilisateur
+            var arrivalTimeInput = document.getElementById("arrivalTime");
+            var arrivalTime = arrivalTimeInput.value.trim();
+
+            // Sélectionnez tous les éléments de vol
+            var flights = document.querySelectorAll('.flight-item');
+
+            // Parcourez chaque vol et filtrez en fonction de l'heure d'arrivée
+            flights.forEach(function (flight) {
+                var arrivalTimeAttribute = flight.getAttribute('data-arrival-time');
+
+                console.log("Arrival Time Attribute: " + arrivalTimeAttribute);
+                console.log("Arrival Time Input: " + arrivalTime);
+
+                // Affichez ou masquez le vol en fonction de l'heure d'arrivée
+                if (arrivalTime === '' || arrivalTime === arrivalTimeAttribute.split('T')[1].substring(0, 5)) {
+                    flight.style.display = 'block';
+                } else {
+                    flight.style.display = 'none';
+                }
+            });
+        }
     </script>
 
 </body>
