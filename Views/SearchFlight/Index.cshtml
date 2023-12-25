@@ -24,6 +24,12 @@
     <title>Web Design Mastery | Flivan</title>
 </head>
 <body>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="itineraryDetails"></div>
+        </div>
+    </div>
     <nav>
 
         <div class="nav__logo">FlySky</div>
@@ -129,17 +135,9 @@
 
 
     <section class="section popular">
-        <label for="sort-by">Sort By:</label>
-        <select id="sort-by" onchange="sortFlights()">
-            <option value="price">Price</option>
-            <option value="duration">Duration</option>
-            <option value="stops">Number of Stops</option>
-        </select>
-        <label for="sort-order">Sort Order:</label>
-        <select id="sort-order" onchange="sortFlights()">
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-        </select>
+
+            
+        
         <div class="container">
 
             <p class="section-subtitle">Nos offres</p>
@@ -152,28 +150,28 @@
             {
                 <div class="form__group">
 
-                    <select id="filterOptions" class="btn"  style="margin-left: 20px;">
-                        <option value="" disabled selected>Type de vol</option>
+                    <select id="filterOptions" class="btn" style="margin-left: 20px;" onchange="applyFilters()">
                         <option value="all">Tous les vols</option>
                         <option value="avec-escale">Vols avec escales</option>
                         <option value="direct">Vols directs</option>
                     </select>
-                    <input type="text" id="departureTime" class="btn" style="width: 180px;margin-left:10px;" placeholder="Saisir l'heure de depart Ex. 14:30" />
-                    <input type="text" id="arrivalTime" class="btn" style="width: 180px;margin-left:10px;" placeholder="Saisir l'heure d'arrivee Ex. 14:30" />
-                    
-                    <select id="filterOptions2" class="btn" style="margin-left: 10px;">
-                        <option value="" disabled selected>Prix</option>
-                        <option value="true">Croissant</option>
-                        <option value="false">Décroissant</option>
+                    <input type="text" id="departureTime" class="btn" style="width: 180px;margin-left:10px;" placeholder="Saisir l'heure de depart Ex. 14:30" onchange="applyFilters()" />
+                    <input type="text" id="arrivalTime" class="btn" style="width: 180px;margin-left:10px;" placeholder="Saisir l'heure d'arrivee Ex. 14:30" onchange="applyFilters()" />
+
+
+                    <select id="sort-by" class="btn" style="margin-left: 10px;" onchange="applyFilters()">
+                        <option value="price">Price</option>
+                        <option value="duration">Duration</option>
+                        <option value="stops">Number of Stops</option>
                     </select>
-                    <select id="filterOptions3" class="btn" style="margin-left: 10px;">
-                        <option value="" disabled selected>Durée</option>
-                        <option value="true">Long to court</option>
-                        <option value="false">Court to long</option>
+
+                    <select id="sort-order" class="btn" style="margin-left: 10px;" onchange="applyFilters()" >
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
                     </select>
-                   
+                    <p id="filterResultsCount"></p>
                 
-                    <button onclick="sortAndFilterFlights()" class="btn" style="background-color:hsl(47, 98%, 50%);margin-left:180px;"><i class="ri-search-line"></i> Filtrer les offres</button>
+                    <button onclick="applyFilters()" class="btn" style="background-color:hsl(47, 98%, 50%);margin-left:180px;"><i class="ri-search-line"></i> Filtrer les offres</button>
                 </div>
               
 
@@ -186,12 +184,11 @@
                         @*                        <li class="flight-item" data-stops="@(flight.Itineraries.Count > 1 ? "avec-escale" : "direct")"> *@
                         @*    <li class="flight-item" data-departure-time="@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At">
                 *@
-                        var stopsAttribute = (flight.Itineraries.Count > 1 ? "avec-escale" : "direct");
+                        var stopsAttribute = (flight.Itineraries[0].Segments.Count > 1 ? "avec-escale" : "direct");
                         <li class="flight-item" data-stops="@stopsAttribute" data-departure-time="@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At"
-                            data-arrival-time="@flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At">
-                            <div class="popular-card">
+                            data-arrival-time="@flight.Itineraries[0].Segments.LastOrDefault()?.Arrival.At">
+                            <div class="popular-card" data-flight-id="@flight.Id">
                                 <figure class="card-banner">
-
                                     <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
                                          alt="Flight Image" class="img-cover">
                                     <span class="card-badge">
@@ -218,15 +215,15 @@
 
 
                                     <address class="card-location">Return Date: >@flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
-                                    <p class="card-stops">@(flight.Itineraries.Count > 1 ? "avec-escale" : "direct")</p>
+                                    
 
                                     <address class="card-location">Return Date: @flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
                                     
                                     <a class="durationToBeformatter">@flight.Itineraries.FirstOrDefault()?.Duration</a>
-
-                                    <div class="itinerary-container" style="display:block;">
+                                    <button class="show-itinerary-button">Show Itinerary Details</button>
+                                    <div class="itinerary-container" style="display:none;">
                                         @for (int i = 0; i < flight.Itineraries.Count; i++)
-                                        {
+                                        { 
                                             var itinerary = flight.Itineraries[i];
                                             <div class="itinerary-details">
                                                 @if (i == 0)
@@ -241,8 +238,11 @@
                                                 {
                                                     <h4>Itinerary Details</h4>
                                                 }
-
-                                                <p class="durationToBeformatter">Total duration Duration: <span class="totalDuration">@itinerary.Duration</span><input class="totalDurationforSort" "totalDurationforSort" type="hidden" value="@itinerary.Duration"></p>
+                                                <p>
+                                                    <span class="totalDurationforSort" style="display:none;">
+                                                        @itinerary.Duration<span />
+                                                </p>
+                                                <p class="durationToBeformatter">Total duration Duration: <span class="totalDuration">@itinerary.Duration</span></p>
                                                 
                                                     @if (itinerary.Segments.Count - 1 == 0)
                                                     {
@@ -261,23 +261,29 @@
                                                     @foreach (var segment in itinerary.Segments)
                                                     {
                                                         <li>
-                                                            <div class="segment-details">
+                                                            <div class="segment-details" >
                                                                 <p>*Departure: @segment.Departure.IataCode</p>
                                                                 <p>--Departure Time: @segment.Departure.At</p>
                                                                 <p class="durationToBeformatter">--Duration: @segment.Duration</p>
                                                                 <p>*Arrival: @segment.Arrival.IataCode</p>
-                                                                <p>--Arrival Time: @segment.Arrival.At</p>
-                                                                
+                                                                @if (i == 0)
+                                                                {
+                                                                    <p>--Arrival Time: <span class="flightArrivalTime">@segment.Arrival.At</span></p>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <p>--Arrival Time: @segment.Arrival.At</p>
+                                                                }
+
+                                                               
                                                             </div>
                                                         </li>
                                                     }
+
                                                 </ul>
                                             </div>
                                         }
                                     </div>
-
-                                    
-
                                 </div>
                             </div>
                         </li>
@@ -306,7 +312,7 @@
 
                 <p class="about-text">
                      Si notre aventure a débuté avec une passion pour
-                    l'exploration, elle s'est transformée en un engagement à fournir des expériences de voyage authentiques 
+                    l'exploration, elle s'est transformée en un engagement à fournifr des expériences de voyage authentiques 
                     et inoubliables. 
 
                 </p>
@@ -607,132 +613,97 @@
         });
 
 
-        function applyFilter1() {
-            // Récupérer la valeur sélectionnée dans le sélecteur
-            var filterOption = document.getElementById("filterOptions").value;
-
-            // Sélectionnez tous les éléments de vol
-            var flights = document.querySelectorAll('.flight-item');
-
-            // Parcourez chaque vol et filtrez en fonction de l'option sélectionnée
-            flights.forEach(function (flight) {
-                var stopsAttribute = flight.getAttribute('data-stops');
-
-                // Affichez ou masquez le vol en fonction de l'option de filtre
-                if (filterOption === 'all' || (filterOption === 'avec-escale' && stopsAttribute === 'avec-escale') || (filterOption === 'direct' && stopsAttribute === 'direct')) {
-                    flight.style.display = 'block';
-                } else {
-                    flight.style.display = 'none';
-                }
-            });
-        }
    
-        function applyFilter2() {
-            // Récupérer l'heure saisie par l'utilisateur
-            var departureTimeInput = document.getElementById("departureTime");
-            var departureTime = departureTimeInput.value.trim();
-
-            // Sélectionnez tous les éléments de vol
-            var flights = document.querySelectorAll('.flight-item');
-
-            // Parcourez chaque vol et filtrez en fonction de l'heure de départ
-            flights.forEach(function (flight) {
-                var departureTimeAttribute = flight.getAttribute('data-departure-time');
-
-                // Affichez ou masquez le vol en fonction de l'heure de départ
-                if (departureTime === '' || departureTime === departureTimeAttribute.split('T')[1].substring(0, 5)) {
-                    flight.style.display = 'block';
-                } else {
-                    flight.style.display = 'none';
-                }
-            });
-        }
     
-        function applyFilter3() {
-            // Récupérer l'heure saisie par l'utilisateur
-            var arrivalTimeInput = document.getElementById("arrivalTime");
-            var arrivalTime = arrivalTimeInput.value.trim();
-
-            // Sélectionnez tous les éléments de vol
-            var flights = document.querySelectorAll('.flight-item');
-
-            // Parcourez chaque vol et filtrez en fonction de l'heure de départ
-            flights.forEach(function (flight) {
-                var arrivalTimeAttribute = flight.getAttribute('data-arrival-time');
-
-                // Affichez ou masquez le vol en fonction de l'heure de départ
-                if (arrivalTime === '' || arrivalTime === arrivalTimeAttribute.split('T')[1].substring(0, 5)) {
-                    flight.style.display = 'block';
-                } else {
-                    flight.style.display = 'none';
-                }
-            });
-        }
+      
 
 
         function applyFilters() {
-            // Récupérer la valeur sélectionnée dans le sélecteur
+            // Sorting variables
+            var sortBy = document.getElementById("sort-by").value;
+            var sortOrder = document.getElementById("sort-order").value;
+            var flightsContainer = document.querySelector('.popular-list');
+            var filterResultsCountElement = document.getElementById("filterResultsCount")
+            // Retrieve the value selected in the selector
             var filterOption = document.getElementById("filterOptions").value;
 
-            // Récupérer l'heure de départ saisie par l'utilisateur
+            // Retrieve the departure time entered by the user
             var departureTimeInput = document.getElementById("departureTime");
             var departureTime = departureTimeInput.value.trim();
 
-            // Récupérer l'heure d'arrivée saisie par l'utilisateur
+            // Retrieve the arrival time entered by the user
             var arrivalTimeInput = document.getElementById("arrivalTime");
             var arrivalTime = arrivalTimeInput.value.trim();
 
-            // Sélectionnez tous les éléments de vol
+            // Select all flight elements
             var flights = document.querySelectorAll('.flight-item');
 
-            // Parcourez chaque vol et filtrez en fonction des options sélectionnées
-            flights.forEach(function (flight) {
+            // Convert NodeList to array
+            var flightsArray = Array.from(flights);
+
+            // Sort the flights based on the selected criteria (sortBy and sortOrder)
+            flightsArray.sort(function (a, b) {
+                var aValue, bValue;
+
+                switch (sortBy) {
+                    case "price":
+                        aValue = parseFloat(a.querySelector('.card-price').innerText.match(/\d+\.\d+/)[0]);
+                        bValue = parseFloat(b.querySelector('.card-price').innerText.match(/\d+\.\d+/)[0]);
+                        break;
+                    case "duration":
+                        aValue = convertDurationToMinutes(a.querySelector('.totalDurationforSort').innerText);
+                        bValue = convertDurationToMinutes(b.querySelector('.totalDurationforSort').innerText);
+                        break;
+                    case "stops":
+                        aValue = parseInt(a.querySelector('.totalStops').innerText.match(/\d+/)[0]);
+                        bValue = parseInt(b.querySelector('.totalStops').innerText.match(/\d+/)[0]);
+                        break;
+                    default:
+                        return 0;
+                }
+
+                return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+            });
+
+            // Clear the current content in the container
+            flightsContainer.innerHTML = '';
+
+            // Append the sorted flights to the container
+            flightsArray.forEach(function (flight) {
+                flightsContainer.appendChild(flight);
+            });
+            var filteredResultsCount = 0;
+            // Now, apply filtering based on user input
+            flightsArray.forEach(function (flight) {
                 var stopsAttribute = flight.getAttribute('data-stops');
                 var departureTimeAttribute = flight.getAttribute('data-departure-time');
                 var arrivalTimeAttribute = flight.getAttribute('data-arrival-time');
 
-                // Affichez ou masquez le vol en fonction des options de filtre
+                // Display or hide the flight based on the filter options
                 var showFlight = (filterOption === 'all' || (filterOption === 'avec-escale' && stopsAttribute === 'avec-escale') || (filterOption === 'direct' && stopsAttribute === 'direct'));
 
-                // Si l'option de filtre par heure de départ est renseignée, appliquez le filtre
+                // If the filter by departure time option is provided, apply the filter
                 if (departureTime !== '' && departureTime !== departureTimeAttribute.split('T')[1].substring(0, 5)) {
                     showFlight = false;
                 }
 
-                // Si l'option de filtre par heure d'arrivée est renseignée, appliquez le filtre
+                // If the filter by arrival time option is provided, apply the filter
                 if (arrivalTime !== '' && arrivalTime !== arrivalTimeAttribute.split('T')[1].substring(0, 5)) {
                     showFlight = false;
                 }
 
-                // Affichez ou masquez le vol en fonction des options de filtre combinées
+                // Display or hide the flight based on combined filter options
                 flight.style.display = showFlight ? 'block' : 'none';
-            });
-        }
-    
-        function applyFilter5() {
-            // Récupérer l'heure d'arrivée saisie par l'utilisateur
-            var arrivalTimeInput = document.getElementById("arrivalTime");
-            var arrivalTime = parseTime(arrivalTimeInput.value.trim());
-
-            // Sélectionnez tous les éléments de vol
-            var flights = document.querySelectorAll('.popular-list li');
-
-            // Parcourez chaque vol et filtrez en fonction de l'heure d'arrivée
-            flights.forEach(function (flight) {
-                var arrivalTimeAttribute = flight.querySelector('.card-location').getAttribute('data-arrival-time');
-                var formattedArrivalTime = extractHour(arrivalTimeAttribute);
-
-                // Convertir l'heure d'arrivée en objet de temps
-                var flightArrivalTime = parseTime(formattedArrivalTime);
-
-                // Affichez ou masquez le vol en fonction de l'heure d'arrivée
-                if (arrivalTime.hour === -1 || compareTime(arrivalTime, flightArrivalTime)) {
-                    flight.style.display = 'block';
-                } else {
-                    flight.style.display = 'none';
+                if (showFlight) {
+                    filteredResultsCount++;
                 }
             });
+            filterResultsCountElement.innerText = filteredResultsCount + " Résultat(s) trouvé.";
         }
+
+
+    
+        
 
         function parseTime(timeString) {
             var parts = timeString.split(':');
@@ -750,42 +721,9 @@
             return dateTimeString.split('T')[1].substring(0, 5);
         }
     
-        function applyFilter4() {
-            // Récupérer l'heure saisie par l'utilisateur
-            var arrivalTimeInput = document.getElementById("arrivalTime");
-            var arrivalTime = arrivalTimeInput.value.trim();
+        
 
-            // Sélectionnez tous les éléments de vol
-            var flights = document.querySelectorAll('.flight-item');
-
-            // Parcourez chaque vol et filtrez en fonction de l'heure d'arrivée
-            flights.forEach(function (flight) {
-                var arrivalTimeAttribute = flight.getAttribute('data-arrival-time');
-
-                console.log("Arrival Time Attribute: " + arrivalTimeAttribute);
-                console.log("Arrival Time Input: " + arrivalTime);
-
-                // Affichez ou masquez le vol en fonction de l'heure d'arrivée
-                if (arrivalTime === '' || arrivalTime === arrivalTimeAttribute.split('T')[1].substring(0, 5)) {
-                    flight.style.display = 'block';
-                } else {
-                    flight.style.display = 'none';
-                }
-            });
-        }
-
-        function convertDurationToMinutes(duration) {
-            const regex = /PT(\d+)H(\d+)M/;
-            const match = duration.match(regex);
-
-            if (match) {
-                const hours = parseInt(match[1]) || 0;
-                const minutes = parseInt(match[2]) || 0;
-                return hours * 60 + minutes;
-            }
-
-            return 0;
-        }
+        
 
         function sortFlights() {
             var sortBy = document.getElementById("sort-by").value;
@@ -804,8 +742,10 @@
                         bValue = parseFloat(b.querySelector('.card-price').innerText.match(/\d+\.\d+/)[0]);
                         break;
                     case "duration":
+
                         aValue = convertDurationToMinutes(a.querySelector('.totalDurationforSort').value);
                         bValue = convertDurationToMinutes(b.querySelector('.totalDurationforSort').value);
+                        
                         break;
                     case "stops":
                         aValue = parseInt(a.querySelector('.totalStops').innerText.match(/\d+/)[0]);
@@ -829,7 +769,7 @@
 
 
         function formatDuration(duration) {
-            const regex = /PT(\d*)H(\d*)M/;
+            const regex = /PT(\d*)H(\d*)M?/;
             const match = duration.match(regex);
 
             if (match) {
@@ -866,68 +806,51 @@
         });
 
 
+        function convertDurationToMinutes(duration) {
+            const regex = /PT(\d*)H(\d*)M?/;
+            const match = duration.match(regex);
 
-        function sortAndFilterFlights() {
-            // ... (Same sorting logic as before)
+            if (!match) {
+                return 0;
+            }
 
-            // Récupérer la valeur sélectionnée dans le sélecteur
-            var filterOption = document.getElementById("filterOptions").value;
+            const hours = match[1] ? parseInt(match[1]) : 0;
+            const minutes = match[2] ? parseInt(match[2]) : 0;
 
-            // Récupérer l'heure de départ saisie par l'utilisateur
-            var departureTimeInput = document.getElementById("departureTime");
-            var departureTime = departureTimeInput.value.trim();
-
-            // Récupérer l'heure d'arrivée saisie par l'utilisateur
-            var arrivalTimeInput = document.getElementById("arrivalTime");
-            var arrivalTime = arrivalTimeInput.value.trim();
-
-            // Sélectionnez tous les éléments de vol
-            var flights = document.querySelectorAll('.flight-item');
-
-            // Filter flights based on user input
-            var filteredFlights = Array.from(flights).filter(function (flight) {
-                var stopsAttribute = flight.getAttribute('data-stops');
-                var departureTimeAttribute = flight.getAttribute('data-departure-time');
-                var arrivalTimeAttribute = flight.getAttribute('data-arrival-time');
-
-                var showFlight = (filterOption === 'all' || (filterOption === 'avec-escale' && stopsAttribute === 'avec-escale') || (filterOption === 'direct' && stopsAttribute === 'direct'));
-
-                if (departureTime !== '' && departureTime !== departureTimeAttribute.split('T')[1].substring(0, 5)) {
-                    showFlight = false;
-                }
-
-                if (arrivalTime !== '' && arrivalTime !== arrivalTimeAttribute.split('T')[1].substring(0, 5)) {
-                    showFlight = false;
-                }
-
-                return showFlight;
-            });
-
-            // Clear the current content in the container
-            var flightsContainer = document.querySelector('.popular-list');
-            flightsContainer.innerHTML = '';
-
-            // Append the sorted and filtered flights to the container
-            filteredFlights.forEach(function (flight) {
-                flightsContainer.appendChild(flight);
-            });
-
-            // Sort the visible flights
-            var sortedFlights = Array.from(document.querySelectorAll('.popular-card'));
-            sortedFlights.sort(function (a, b) {
-                // Same sorting logic as before
-            });
-
-            // Clear the current content in the container
-            flightsContainer.innerHTML = '';
-
-            // Append the sorted flights to the container
-            sortedFlights.forEach(function (flight) {
-                flightsContainer.appendChild(flight);
-            });
+            return hours * 60 + minutes;
         }
 
 
+
+
+        
+
+
+
+
+
+        
+    </script>
+
+
+    <script>
+        // JavaScript to handle card click and show/hide itinerary details
+        var flightCards = document.querySelectorAll('.popular-card');
+
+        flightCards.forEach(function (card) {
+            // Get the button and itinerary details container within each card
+            var showItineraryButton = card.querySelector('.show-itinerary-button');
+            var itineraryContainer = card.querySelector('.itinerary-container');
+
+            showItineraryButton.addEventListener('click', function () {
+                // Toggle the display property of the itinerary details container
+                if (itineraryContainer.style.display === 'none' || itineraryContainer.style.display === '') {
+                    itineraryContainer.style.display = 'block';
+                } else {
+                    itineraryContainer.style.display = 'none';
+                }
+            });
+        });
     </script>
 
 </body>
