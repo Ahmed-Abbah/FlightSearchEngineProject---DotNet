@@ -38,6 +38,15 @@
         <div class="booking__nav">
             <span>Rechercher votre vol maintenant</span>
         </div>
+
+        @if (ViewData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                <h4>Error:</h4>
+                <p>@ViewData["ErrorMessage"]</p>
+            </div>
+        }
+
         <form asp-controller="SearchFlight" asp-action="GetFlights" method="post">
             <div class="form__group">
                 <span><i class="ri-map-pin-line"></i></span>
@@ -65,7 +74,7 @@
                 <span><i class="ri-user-3-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="number" style="margin-top: 35px;" name="NumberOfPassengers" id="numberOfPersons" value="@TempData["NumberOfPassengers"]" required />
+                        <input type="number" style="margin-top: 35px;" min="0" name="NumberOfPassengers" id="numberOfPersons" value="@TempData["NumberOfPassengers"]" required />
                         <label for="numberOfPersons">Nombre de places</label>
                     </div>
                     <p>Ajouter des voyageurs</p>
@@ -86,7 +95,7 @@
                 <span><i class="ri-calendar-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="date" style="margin-top: 35px;"  name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]" required />
+                        <input type="date" style="margin-top: 35px;"  name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]"  />
                         <label for="returnDate">Date de Retour</label>
                     </div>
                     <p>Ajouter la date de retour</p>
