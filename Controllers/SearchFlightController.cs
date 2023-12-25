@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
 using FlightsSearchEngineProject.Models;
+using System.Globalization;
 
 namespace FlightsSearchEngineProject.Controllers
 {
@@ -145,10 +146,7 @@ namespace FlightsSearchEngineProject.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return View("Index", searchModel);
-                }
+              
 
                 // Ensure the bearer token is available
                 if (string.IsNullOrEmpty(_bearerToken))
@@ -169,8 +167,56 @@ namespace FlightsSearchEngineProject.Controllers
                 Console.WriteLine($"Origin City Code: {originCityCode}");
                 Console.WriteLine($"Destination City Code: {destinationCityCode}");
 
-                // Construct the API request URL
-                var requestUrl = $"{apiUrl}?originLocationCode={originCityCode}&destinationLocationCode={destinationCityCode}&departureDate={searchModel.DepartureDate:yyyy-MM-dd}&returnDate={searchModel.ReturnDate:yyyy-MM-dd}&adults={searchModel.NumberOfPassengers}&travelClass={searchModel.TravelClass}&nonStop=false";
+                var requestUrl = "";
+
+                TempData["DepartureCity"] = searchModel.DepartureCity;
+                TempData["ArrivalCity"] = searchModel.ArrivalCity;
+                TempData["NumberOfPassengers"] = searchModel.NumberOfPassengers;
+                TempData["DepartureDate"] = searchModel.DepartureDate.ToString("yyyy-MM-dd");
+                
+                TempData["TravelClass"] = searchModel.TravelClass;
+                Console.WriteLine($" departure date est :{searchModel.DepartureDate}");
+
+                
+                
+                if (searchModel.ReturnDate != null && DateTime.TryParseExact(searchModel.ReturnDate.ToString(), "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime returnDate))
+                 {
+                        TempData["ReturnDate"] = returnDate.ToString("yyyy-MM-dd");
+                 }
+                else
+                 {
+                        Console.WriteLine($"Invalid ReturnDate format: {searchModel.ReturnDate}");
+                        TempData["ReturnDate"] = null; // Handle the case where parsing fails or the input is null
+                }
+
+                
+
+
+
+
+
+                Console.WriteLine($"{TempData["ReturnDate"]}");
+
+                if (originCityCode == null || destinationCityCode == null)
+                {
+                    ViewData["ErrorMessage"] = "Invalid city names. Please enter valid cities.";
+                    return View("Index");
+                }
+               else if (searchModel.DepartureDate.Date < DateTime.Now.Date)
+                {
+
+                    ViewData["ErrorMessage"] = "Date de depart est invalide ";
+                    TempData["DepartureDate"] = null;
+                    return View("Index");
+                }
+                else if (TempData["ReturnDate"] == null)
+                {
+                    requestUrl = $"{apiUrl}?originLocationCode={originCityCode}&destinationLocationCode={destinationCityCode}&departureDate={searchModel.DepartureDate:yyyy-MM-dd}&adults={searchModel.NumberOfPassengers}&travelClass={searchModel.TravelClass}&nonStop=false";
+
+                }
+                else {
+                    requestUrl = $"{apiUrl}?originLocationCode={originCityCode}&destinationLocationCode={destinationCityCode}&departureDate={searchModel.DepartureDate:yyyy-MM-dd}&returnDate={searchModel.ReturnDate:yyyy-MM-dd}&adults={searchModel.NumberOfPassengers}&travelClass={searchModel.TravelClass}&nonStop=false";
+                }
 
                 var response = await _httpClient.GetAsync(requestUrl);
                 response.EnsureSuccessStatusCode();
@@ -184,13 +230,10 @@ namespace FlightsSearchEngineProject.Controllers
                 // Extract the flight data from the response object
                 var flights = responseObject?.Data;
 
-                TempData["DepartureCity"] = searchModel.DepartureCity;
-                TempData["ArrivalCity"] = searchModel.ArrivalCity;
-                TempData["NumberOfPassengers"] = searchModel.NumberOfPassengers;
-                TempData["DepartureDate"] = searchModel.DepartureDate;
-                TempData["ReturnDate"] = searchModel.ReturnDate;
-                TempData["TravelClass"] = searchModel.TravelClass;
+               
 
+
+                Console.WriteLine($"DepartureDate :{TempData["DepartureDate"]}");
 
 
                 Console.WriteLine($"flights content: {flights}");

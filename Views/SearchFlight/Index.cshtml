@@ -1,4 +1,4 @@
-﻿@model List<FlightsSearchEngineProject.Models.Flight.FlightData>
+﻿@model List<FlightsSearchEngineProject.Models.Flight.FlightData> 
 
 
 <!DOCTYPE html>
@@ -44,13 +44,21 @@
         <div class="booking__nav">
             <span>Rechercher votre vol maintenant</span>
         </div>
+        @if (ViewData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                <h4>Error:</h4>
+                <p>@ViewData["ErrorMessage"]</p>
+            </div>
+        }
+
         <form asp-controller="SearchFlight" asp-action="GetFlights" method="post">
             <div class="form__group">
                 <span><i class="ri-map-pin-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
                         <input type="text" name="DepartureCity" id="departureCity" value="@TempData["DepartureCity"]" required />
-                        <label for="departureCity">Ville de départ</label>
+                        <!--  <label for="departureCity">Ville de départ</label> -->
                         <div id="departureSuggestions" class="suggestions-container"></div>
                     </div>
                     <p>Depart city</p>
@@ -61,7 +69,7 @@
                 <div class="input__content">
                     <div class="input__group">
                         <input type="text" name="ArrivalCity" id="arrivalCity" value="@TempData["ArrivalCity"]" required />
-                        <label for="arrivalCity">Ville d'arrivée</label>
+                      @*   <label for="arrivalCity">Ville d'arrivée</label> *@
                         <div id="arrivalSuggestions" class="suggestions-container"></div>
                     </div>
                     <p>Arrived City</p>
@@ -72,7 +80,7 @@
                 <div class="input__content">
                     <div class="input__group">
                         <input type="number" name="NumberOfPassengers" id="numberOfPersons" value="@TempData["NumberOfPassengers"]" required />
-                        <label for="numberOfPersons">Nombre de personnes</label>
+                       @*  <label for="numberOfPersons">Nombre de personnes</label> *@
                     </div>
                     <p>Add guests</p>
                 </div>
@@ -83,7 +91,7 @@
                 <div class="input__content">
                     <div class="input__group">
                         <input type="date" name="DepartureDate" id="departureDate" value="@TempData["DepartureDate"]" required />
-                        <label for="departureDate">Date de départ</label>
+                        @* <label for="departureDate">Date de départ</label> *@
                     </div>
                     <p>Add depart date</p>
                 </div>
@@ -92,8 +100,8 @@
                 <span><i class="ri-calendar-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="date" name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]" required />
-                        <label for="returnDate">Date de Retour</label>
+                        <input type="date" name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]"  />
+                        @* <label for="returnDate">Date de Retour</label> *@
                     </div>
                     <p>Add return date</p>
                 </div>
@@ -140,6 +148,7 @@
                             <div class="popular-card">
                                 <figure class="card-banner">
 
+
                                     <img src="~/assets/images/airplane.png" width="740" height="518" loading="lazy"
                                          alt="Flight Image" class="img-cover">
                                     <span class="card-badge">
@@ -156,7 +165,7 @@
                                     </div>
 
                                     <h3 class="card-title">
-                                        <a href="#">@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.IataCode to @flight.Itineraries.FirstOrDefault()?.Segments.LastOrDefault()?.Arrival.IataCode</a>
+                                        <a href="#">@flight.Source to @flight.Itineraries.FirstOrDefault()?.Segments.LastOrDefault()?.Arrival.IataCode</a>
                                     </h3>
 
                                     <address class="card-location">Return Date: >@flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
@@ -324,9 +333,9 @@
             transition: background-color 0.3s ease; /* Add transition for smooth hover effect */
         }
 
-            .suggestion-item:hover {
+        .suggestion-item:hover {
                 background-color: #eee; /* Change hover background color */
-            }
+        }
     </style>
 
 
@@ -509,7 +518,7 @@
             }
 
             const cityEndpoint = 'https://test.api.amadeus.com/v1/reference-data/locations';
-            const apiUrl = `${cityEndpoint}?subType=CITY&keyword=${query}`;
+            const apiUrl = `${cityEndpoint}?subType=AIRPORT&keyword=${query}`;
 
             try {
                 const response = await fetch(apiUrl, {
@@ -520,6 +529,7 @@
 
                 if (response.ok) {
                     const data = await response.json();
+         
                     const citySuggestions = data.data.map(city => city.address.cityName);
                     return citySuggestions;
                 } else {
