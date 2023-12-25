@@ -144,11 +144,9 @@ namespace FlightsSearchEngineProject.Controllers
         }
 
 
-<<<<<<< HEAD
+
         public async Task<IActionResult> GetFlights(FlightSearchModel searchModel, bool? TypeFilter)
-=======
-        public async Task<IActionResult> GetFlights(FlightSearchModel searchModel)
->>>>>>> AhmedBranch
+
         {
             try
             {
@@ -177,14 +175,12 @@ namespace FlightsSearchEngineProject.Controllers
                 Console.WriteLine($"Destination City Code: {destinationCityCode}");
 
                 // Construct the API request URL
-<<<<<<< HEAD
+
                 var requestUrl = $"{apiUrl}?originLocationCode={originCityCode}&destinationLocationCode={destinationCityCode}&departureDate={searchModel.DepartureDate:yyyy-MM-dd}&returnDate={searchModel.ReturnDate:yyyy-MM-dd}&adults={searchModel.NumberOfPassengers}&travelClass={searchModel.TravelClass}";
               
 
 
-=======
-                var requestUrl = $"{apiUrl}?originLocationCode={originCityCode}&destinationLocationCode={destinationCityCode}&departureDate={searchModel.DepartureDate:yyyy-MM-dd}&returnDate={searchModel.ReturnDate:yyyy-MM-dd}&adults={searchModel.NumberOfPassengers}&travelClass={searchModel.TravelClass}&nonStop=false";
->>>>>>> AhmedBranch
+
 
                 var response = await _httpClient.GetAsync(requestUrl);
                 response.EnsureSuccessStatusCode();
@@ -205,10 +201,6 @@ namespace FlightsSearchEngineProject.Controllers
                 TempData["ReturnDate"] = searchModel.ReturnDate;
                 TempData["TravelClass"] = searchModel.TravelClass;
 
-<<<<<<< HEAD
-              
-=======
->>>>>>> AhmedBranch
 
 
                 Console.WriteLine($"flights content: {flights}");

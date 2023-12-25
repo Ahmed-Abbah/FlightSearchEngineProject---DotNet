@@ -173,7 +173,7 @@
                     </select>
                    
                 
-                    <button onclick="applyFilters()" class="btn" style="background-color:hsl(47, 98%, 50%);margin-left:180px;"><i class="ri-search-line"></i> Filtrer les offres</button>
+                    <button onclick="sortAndFilterFlights()" class="btn" style="background-color:hsl(47, 98%, 50%);margin-left:180px;"><i class="ri-search-line"></i> Filtrer les offres</button>
                 </div>
               
 
@@ -224,7 +224,7 @@
                                     
                                     <a class="durationToBeformatter">@flight.Itineraries.FirstOrDefault()?.Duration</a>
 
-                                    <div class="itinerary-container" style="display:none;">
+                                    <div class="itinerary-container" style="display:block;">
                                         @for (int i = 0; i < flight.Itineraries.Count; i++)
                                         {
                                             var itinerary = flight.Itineraries[i];
@@ -487,6 +487,7 @@
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
     <script>
+
         async function getAccessToken() {
             const clientId = 'OllFoRCGzYf2Gu7oK2H7dqeh3JEOEeg2';
             const clientSecret = 'F4X5O0uqMxkKmEkO';
@@ -553,7 +554,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function () {
             const departureCityInput = document.getElementById('departureCity');
             const departureSuggestionsContainer = document.getElementById('departureSuggestions');
 
@@ -604,13 +605,8 @@
                 }
             });
         });
-    </script>
-<<<<<<< HEAD
-    <!-- Script JavaScript -->
-    <!-- Script JavaScript -->
-    <!-- Script JavaScript -->
-    <!-- Ajoutez ceci à votre script JavaScript -->
-    <script>
+
+
         function applyFilter1() {
             // Récupérer la valeur sélectionnée dans le sélecteur
             var filterOption = document.getElementById("filterOptions").value;
@@ -630,9 +626,7 @@
                 }
             });
         }
-    </script>
-    <!-- Ajoutez ceci à votre script JavaScript -->
-    <script>
+   
         function applyFilter2() {
             // Récupérer l'heure saisie par l'utilisateur
             var departureTimeInput = document.getElementById("departureTime");
@@ -653,8 +647,7 @@
                 }
             });
         }
-    </script>
-    <script>
+    
         function applyFilter3() {
             // Récupérer l'heure saisie par l'utilisateur
             var arrivalTimeInput = document.getElementById("arrivalTime");
@@ -675,9 +668,8 @@
                 }
             });
         }
-    </script>
 
-    <script>
+
         function applyFilters() {
             // Récupérer la valeur sélectionnée dans le sélecteur
             var filterOption = document.getElementById("filterOptions").value;
@@ -716,11 +708,7 @@
                 flight.style.display = showFlight ? 'block' : 'none';
             });
         }
-    </script>
-
-
-
-    <script>
+    
         function applyFilter5() {
             // Récupérer l'heure d'arrivée saisie par l'utilisateur
             var arrivalTimeInput = document.getElementById("arrivalTime");
@@ -761,8 +749,7 @@
         function extractHour(dateTimeString) {
             return dateTimeString.split('T')[1].substring(0, 5);
         }
-    </script>
-    <script>
+    
         function applyFilter4() {
             // Récupérer l'heure saisie par l'utilisateur
             var arrivalTimeInput = document.getElementById("arrivalTime");
@@ -787,9 +774,6 @@
             });
         }
 
-
-
-  
         function convertDurationToMinutes(duration) {
             const regex = /PT(\d+)H(\d+)M/;
             const match = duration.match(regex);
@@ -880,6 +864,69 @@
         document.addEventListener('DOMContentLoaded', function () {
             formatAllDurations();
         });
+
+
+
+        function sortAndFilterFlights() {
+            // ... (Same sorting logic as before)
+
+            // Récupérer la valeur sélectionnée dans le sélecteur
+            var filterOption = document.getElementById("filterOptions").value;
+
+            // Récupérer l'heure de départ saisie par l'utilisateur
+            var departureTimeInput = document.getElementById("departureTime");
+            var departureTime = departureTimeInput.value.trim();
+
+            // Récupérer l'heure d'arrivée saisie par l'utilisateur
+            var arrivalTimeInput = document.getElementById("arrivalTime");
+            var arrivalTime = arrivalTimeInput.value.trim();
+
+            // Sélectionnez tous les éléments de vol
+            var flights = document.querySelectorAll('.flight-item');
+
+            // Filter flights based on user input
+            var filteredFlights = Array.from(flights).filter(function (flight) {
+                var stopsAttribute = flight.getAttribute('data-stops');
+                var departureTimeAttribute = flight.getAttribute('data-departure-time');
+                var arrivalTimeAttribute = flight.getAttribute('data-arrival-time');
+
+                var showFlight = (filterOption === 'all' || (filterOption === 'avec-escale' && stopsAttribute === 'avec-escale') || (filterOption === 'direct' && stopsAttribute === 'direct'));
+
+                if (departureTime !== '' && departureTime !== departureTimeAttribute.split('T')[1].substring(0, 5)) {
+                    showFlight = false;
+                }
+
+                if (arrivalTime !== '' && arrivalTime !== arrivalTimeAttribute.split('T')[1].substring(0, 5)) {
+                    showFlight = false;
+                }
+
+                return showFlight;
+            });
+
+            // Clear the current content in the container
+            var flightsContainer = document.querySelector('.popular-list');
+            flightsContainer.innerHTML = '';
+
+            // Append the sorted and filtered flights to the container
+            filteredFlights.forEach(function (flight) {
+                flightsContainer.appendChild(flight);
+            });
+
+            // Sort the visible flights
+            var sortedFlights = Array.from(document.querySelectorAll('.popular-card'));
+            sortedFlights.sort(function (a, b) {
+                // Same sorting logic as before
+            });
+
+            // Clear the current content in the container
+            flightsContainer.innerHTML = '';
+
+            // Append the sorted flights to the container
+            sortedFlights.forEach(function (flight) {
+                flightsContainer.appendChild(flight);
+            });
+        }
+
 
     </script>
 
