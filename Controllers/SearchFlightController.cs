@@ -174,10 +174,11 @@ namespace FlightsSearchEngineProject.Controllers
                 TempData["ArrivalCity"] = searchModel.ArrivalCity;
                 TempData["NumberOfPassengers"] = searchModel.NumberOfPassengers;
                 TempData["DepartureDate"] = searchModel.DepartureDate.ToString("yyyy-MM-dd");
-                TempData["ReturnDate"] = null;
+
                 TempData["TravelClass"] = searchModel.TravelClass;
                 Console.WriteLine($" departure date est :{searchModel.DepartureDate}");
 
+                TempData["ReturnDate"] = null;
 
 
                 if (searchModel.ReturnDate != null && DateTime.TryParseExact(searchModel.ReturnDate.ToString(), "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime returnDate))
@@ -187,7 +188,7 @@ namespace FlightsSearchEngineProject.Controllers
                 else
                 {
                     Console.WriteLine($"Invalid ReturnDate format: {searchModel.ReturnDate}");
-                    TempData["ReturnDate"] = null; // Handle the case where parsing fails or the input is null
+                    TempData["ReturnDate"] = null;
                 }
 
 
@@ -260,8 +261,6 @@ namespace FlightsSearchEngineProject.Controllers
                 return BadRequest("Error while retrieving flights.");
             }
         }
-
-
 
 
         // Helper method to obtain or refresh the Bearer token
