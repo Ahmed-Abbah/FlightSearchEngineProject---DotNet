@@ -123,8 +123,19 @@
     </section>
 
 
-
+        
     <section class="section popular">
+        <label for="sort-by">Sort By:</label>
+        <select id="sort-by" onchange="sortFlights()">
+            <option value="price">Price</option>
+            <option value="duration">Duration</option>
+            <option value="stops">Number of Stops</option>
+        </select>
+        <label for="sort-order">Sort Order:</label>
+        <select id="sort-order" onchange="sortFlights()">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
         <div class="container">
 
             <p class="section-subtitle">Our offers</p>
@@ -152,6 +163,9 @@
 
                                 <div class="card-content">
                                     <div class="card-wrapper">
+                                        <div>#this div for test only#(flight id: @flight.Id)</div>
+                                    </div>
+                                    <div class="card-wrapper">
                                         <div class="card-price">From $@flight.Price.Total @flight.Price.Currency</div>
                                     </div>
 
@@ -159,11 +173,11 @@
                                         <a href="#">@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.IataCode to @flight.Itineraries.FirstOrDefault()?.Segments.LastOrDefault()?.Arrival.IataCode</a>
                                     </h3>
 
-                                    <address class="card-location">Return Date: >@flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
-                                    <p class="card-stops">@(flight.Itineraries.Count > 1 ? "With Layovers :" +(flight.Itineraries.Count-1)+" stops" : "Direct")</p>
-                                    <a href="#">@flight.Itineraries.FirstOrDefault()?.Duration</a>
+                                    <address class="card-location">Return Date: @flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
+                                    
+                                    <a class="durationToBeformatter">@flight.Itineraries.FirstOrDefault()?.Duration</a>
 
-                                    <div class="itinerary-container">
+                                    <div class="itinerary-container" style="display:none;">
                                         @for (int i = 0; i < flight.Itineraries.Count; i++)
                                         {
                                             var itinerary = flight.Itineraries[i];
@@ -181,7 +195,19 @@
                                                     <h4>Itinerary Details</h4>
                                                 }
 
-                                                <p>Duration: @itinerary.Duration</p>
+                                                <p class="durationToBeformatter">Total duration Duration: <span class="totalDuration">@itinerary.Duration</span><input class="totalDurationforSort" "totalDurationforSort" type="hidden" value="@itinerary.Duration"></p>
+                                                
+                                                    @if (itinerary.Segments.Count - 1 == 0)
+                                                    {
+                                                    <p>Direct<span class='totalStops' style="display:none;">@(itinerary.Segments.Count - 1)</span></p>
+                                                    ;
+                                                    }
+                                                    else
+                                                    {
+                                                       <p>Stop(s): <span class='totalStops'>@(itinerary.Segments.Count - 1)</span></p>
+                                                    }
+
+
 
                                                 <!-- Iterate through Segments to display segment details -->
                                                 <ul class="segments-list">
@@ -191,11 +217,10 @@
                                                             <div class="segment-details">
                                                                 <p>*Departure: @segment.Departure.IataCode</p>
                                                                 <p>--Departure Time: @segment.Departure.At</p>
-                                                                <p>--Duration: @segment.Duration</p>
-                                                                <p>--Number of Stops: @segment.NumberOfStops</p>
+                                                                <p class="durationToBeformatter">--Duration: @segment.Duration</p>
                                                                 <p>*Arrival: @segment.Arrival.IataCode</p>
                                                                 <p>--Arrival Time: @segment.Arrival.At</p>
-                                                                <!-- Add more segment details as needed -->
+                                                                
                                                             </div>
                                                         </li>
                                                     }
@@ -627,6 +652,101 @@
                 }
             });
         });
+    </script>
+
+
+    <script>
+        function convertDurationToMinutes(duration) {
+            const regex = /PT(\d+)H(\d+)M/;
+            const match = duration.match(regex);
+
+            if (match) {
+                const hours = parseInt(match[1]) || 0;
+                const minutes = parseInt(match[2]) || 0;
+                return hours * 60 + minutes;
+            }
+
+            return 0;
+        }
+
+        function sortFlights() {
+            var sortBy = document.getElementById("sort-by").value;
+            var sortOrder = document.getElementById("sort-order").value;
+            var flightsContainer = document.querySelector('.popular-list');
+
+            // Convert the NodeList to an array for easier manipulation
+            var flights = Array.from(document.querySelectorAll('.popular-card'));
+
+            flights.sort(function (a, b) {
+                var aValue, bValue;
+
+                switch (sortBy) {
+                    case "price":
+                        aValue = parseFloat(a.querySelector('.card-price').innerText.match(/\d+\.\d+/)[0]);
+                        bValue = parseFloat(b.querySelector('.card-price').innerText.match(/\d+\.\d+/)[0]);
+                        break;
+                    case "duration":
+                        aValue = convertDurationToMinutes(a.querySelector('.totalDurationforSort').value);
+                        bValue = convertDurationToMinutes(b.querySelector('.totalDurationforSort').value);
+                        break;
+                    case "stops":
+                        aValue = parseInt(a.querySelector('.totalStops').innerText.match(/\d+/)[0]);
+                        bValue = parseInt(b.querySelector('.totalStops').innerText.match(/\d+/)[0]);
+                        break;
+                    default:
+                        return 0;
+                }
+
+                return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+            });
+
+            // Clear the current content in the container
+            flightsContainer.innerHTML = '';
+
+            // Append the sorted flights to the container
+            flights.forEach(function (flight) {
+                flightsContainer.appendChild(flight);
+            });
+        }
+
+
+        function formatDuration(duration) {
+            const regex = /PT(\d*)H(\d*)M/;
+            const match = duration.match(regex);
+
+            if (match) {
+                const hours = parseInt(match[1]) || 0;
+                const minutes = parseInt(match[2]) || 0;
+
+                if (hours > 0 && minutes > 0) {
+                    return hours + " hours and " + minutes + " minutes";
+                } else if (hours > 0) {
+                    return hours + " hours";
+                } else if (minutes > 0) {
+                    return minutes + " minutes";
+                } else {
+                    return "0 minutes";
+                }
+            }
+
+            return duration;
+        }
+
+        // Function to format all elements with class 'durationToBeformatter'
+        function formatAllDurations() {
+            const elements = document.querySelectorAll('.durationToBeformatter');
+            elements.forEach(element => {
+                const originalDuration = element.textContent;
+                const formattedDuration = formatDuration(originalDuration);
+                element.textContent = formattedDuration;
+            });
+        }
+
+        // Call the function after the document is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            formatAllDurations();
+        });
+        
     </script>
 
 </body>
