@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
 using FlightsSearchEngineProject.Models;
+
 using System.Reflection;
 using System.Globalization;
+
 
 namespace FlightsSearchEngineProject.Controllers
 {
@@ -144,6 +146,7 @@ namespace FlightsSearchEngineProject.Controllers
 
 
         public async Task<IActionResult> GetFlights(FlightSearchModel searchModel)
+
         {
             try
             {
@@ -168,7 +171,8 @@ namespace FlightsSearchEngineProject.Controllers
                 Console.WriteLine($"Origin City Code: {originCityCode}");
                 Console.WriteLine($"Destination City Code: {destinationCityCode}");
 
-                var requestUrl = "";
+
+            
 
                 TempData["DepartureCity"] = searchModel.DepartureCity;
                 TempData["ArrivalCity"] = searchModel.ArrivalCity;
@@ -178,7 +182,13 @@ namespace FlightsSearchEngineProject.Controllers
                 TempData["TravelClass"] = searchModel.TravelClass;
                 Console.WriteLine($" departure date est :{searchModel.DepartureDate}");
 
-                TempData["ReturnDate"] = null;
+               
+
+                // Construct the API request URL
+
+                var requestUrl = $"{apiUrl}?originLocationCode={originCityCode}&destinationLocationCode={destinationCityCode}&departureDate={searchModel.DepartureDate:yyyy-MM-dd}&returnDate={searchModel.ReturnDate:yyyy-MM-dd}&adults={searchModel.NumberOfPassengers}&travelClass={searchModel.TravelClass}";
+              
+
 
 
                 if (searchModel.ReturnDate != null && DateTime.TryParseExact(searchModel.ReturnDate.ToString(), "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime returnDate))
@@ -221,6 +231,7 @@ namespace FlightsSearchEngineProject.Controllers
                     requestUrl = $"{apiUrl}?originLocationCode={originCityCode}&destinationLocationCode={destinationCityCode}&departureDate={searchModel.DepartureDate:yyyy-MM-dd}&returnDate={searchModel.ReturnDate:yyyy-MM-dd}&adults={searchModel.NumberOfPassengers}&travelClass={searchModel.TravelClass}&nonStop=false";
                 }
 
+
                 var response = await _httpClient.GetAsync(requestUrl);
                 response.EnsureSuccessStatusCode();
 
@@ -236,7 +247,10 @@ namespace FlightsSearchEngineProject.Controllers
 
 
 
+
                 Console.WriteLine($"DepartureDate :{TempData["DepartureDate"]}");
+
+
 
 
                 Console.WriteLine($"flights content: {flights}");
