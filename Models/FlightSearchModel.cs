@@ -25,7 +25,7 @@ namespace FlightsSearchEngineProject.Models
         [Required(ErrorMessage = "Travel class is required")]
         public string TravelClass { get; set; }
 
-
         public bool? nonStop { get; set; }
+
     }
 }

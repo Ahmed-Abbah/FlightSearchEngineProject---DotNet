@@ -25,12 +25,14 @@
 </head>
 <body>
     <nav>
+
         <div class="nav__logo">FlySky</div>
         
        
     </nav>
     <header class="section__container header__container">
         <h1 class="section__header">Trouver et Réserver<br />Une Expérience Exceptionnelle</h1>
+
         <img src="~/assets/header.jpg" alt="header" />
     </header>
 
@@ -43,8 +45,10 @@
                 <span><i class="ri-map-pin-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
+
                         <input type="text" name="DepartureCity" style="margin-top: 35px;"  id="departureCity" value="@TempData["DepartureCity"]" required />
                         <label for="departureCity" >Ville de départ</label>
+
                         <div id="departureSuggestions" class="suggestions-container"></div>
                     </div>
                     <p>aisir la ville de départ</p>
@@ -54,8 +58,9 @@
                 <span><i class="ri-map-pin-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
+
                         <input type="text" name="ArrivalCity" style="margin-top: 35px;" id="arrivalCity" value="@TempData["ArrivalCity"]" required />
-                        <label for="arrivalCity" >Ville d'arrivée</label>
+
                         <div id="arrivalSuggestions" class="suggestions-container"></div>
                     </div>
                     <p>Saisir la ville d'arrivé</p>
@@ -65,8 +70,10 @@
                 <span><i class="ri-user-3-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
+
                         <input type="number" style="margin-top: 35px;" name="NumberOfPassengers" id="numberOfPersons" value="@TempData["NumberOfPassengers"]" required />
                         <label for="numberOfPersons">Nombre de places</label>
+
                     </div>
                     <p>Ajouter des voyageurs</p>
                 </div>
@@ -76,7 +83,9 @@
                 <span><i class="ri-calendar-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
+
                         <input type="date" style="margin-top: 35px;"  name="DepartureDate" id="departureDate" value="@TempData["DepartureDate"]" required />
+
                         <label for="departureDate">Date de départ</label>
                     </div>
                     <p>jouter la date de départ</p>
@@ -86,7 +95,9 @@
                 <span><i class="ri-calendar-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
+
                         <input type="date" style="margin-top: 35px;"  name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]" required />
+
                         <label for="returnDate">Date de Retour</label>
                     </div>
                     <p>Ajouter la date de retour</p>
@@ -118,6 +129,17 @@
 
 
     <section class="section popular">
+        <label for="sort-by">Sort By:</label>
+        <select id="sort-by" onchange="sortFlights()">
+            <option value="price">Price</option>
+            <option value="duration">Duration</option>
+            <option value="stops">Number of Stops</option>
+        </select>
+        <label for="sort-order">Sort Order:</label>
+        <select id="sort-order" onchange="sortFlights()">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
         <div class="container">
 
             <p class="section-subtitle">Nos offres</p>
@@ -182,15 +204,80 @@
 
                                 <div class="card-content">
                                     <div class="card-wrapper">
-                                        <div class="card-price" data-price="@flight.Price.Total">From $@flight.Price.Total @flight.Price.Currency</div>
+
+                                        <div>#this div for test only#(flight id: @flight.Id)</div>
+                                    </div>
+                                    <div class="card-wrapper">
+                                        <div class="card-price">From $@flight.Price.Total @flight.Price.Currency</div>
+
                                     </div>
 
                                     <h3 class="card-title">
                                         <a href="#">@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.IataCode to @flight.Itineraries.FirstOrDefault()?.Segments.LastOrDefault()?.Arrival.IataCode</a>
                                     </h3>
 
+
                                     <address class="card-location">Return Date: >@flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
                                     <p class="card-stops">@(flight.Itineraries.Count > 1 ? "avec-escale" : "direct")</p>
+
+                                    <address class="card-location">Return Date: @flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
+                                    
+                                    <a class="durationToBeformatter">@flight.Itineraries.FirstOrDefault()?.Duration</a>
+
+                                    <div class="itinerary-container" style="display:none;">
+                                        @for (int i = 0; i < flight.Itineraries.Count; i++)
+                                        {
+                                            var itinerary = flight.Itineraries[i];
+                                            <div class="itinerary-details">
+                                                @if (i == 0)
+                                                {
+                                                    <h4>One Way Flight Details</h4>
+                                                }
+                                                else if (i == 1)
+                                                {
+                                                    <h4>Return Flight Details</h4>
+                                                }
+                                                else
+                                                {
+                                                    <h4>Itinerary Details</h4>
+                                                }
+
+                                                <p class="durationToBeformatter">Total duration Duration: <span class="totalDuration">@itinerary.Duration</span><input class="totalDurationforSort" "totalDurationforSort" type="hidden" value="@itinerary.Duration"></p>
+                                                
+                                                    @if (itinerary.Segments.Count - 1 == 0)
+                                                    {
+                                                    <p>Direct<span class='totalStops' style="display:none;">@(itinerary.Segments.Count - 1)</span></p>
+                                                    ;
+                                                    }
+                                                    else
+                                                    {
+                                                       <p>Stop(s): <span class='totalStops'>@(itinerary.Segments.Count - 1)</span></p>
+                                                    }
+
+
+
+                                                <!-- Iterate through Segments to display segment details -->
+                                                <ul class="segments-list">
+                                                    @foreach (var segment in itinerary.Segments)
+                                                    {
+                                                        <li>
+                                                            <div class="segment-details">
+                                                                <p>*Departure: @segment.Departure.IataCode</p>
+                                                                <p>--Departure Time: @segment.Departure.At</p>
+                                                                <p class="durationToBeformatter">--Duration: @segment.Duration</p>
+                                                                <p>*Arrival: @segment.Arrival.IataCode</p>
+                                                                <p>--Arrival Time: @segment.Arrival.At</p>
+                                                                
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    
+
                                 </div>
                             </div>
                         </li>
@@ -214,12 +301,14 @@
 
                 <p class="section-subtitle">About Us</p>
 
+
                 <h2 class="h2 section-title">Découvrez les merveilles du monde</h2>
 
                 <p class="about-text">
                      Si notre aventure a débuté avec une passion pour
                     l'exploration, elle s'est transformée en un engagement à fournir des expériences de voyage authentiques 
                     et inoubliables. 
+
                 </p>
 
                 <ul class="about-list">
@@ -231,6 +320,7 @@
                         </div>
 
                         <div class="about-item-content">
+
                             <h3 class="h3 about-item-title">
                                 Guide Touristique
 
@@ -262,6 +352,7 @@
 
                     </li>
 
+
                     <li class="about-item">
 
                         <div class="about-item-icon">
@@ -269,11 +360,13 @@
                         </div>
 
                         <div class="about-item-content">
+
                             <h3 class="h3 about-item-title">Tours Fiables</h3>
 
                             <p class="about-item-text">
                                 Chez FlySky, la fiabilité est notre emblème.
                                 Nous planifions méticuleusement chaque tour
+
                             </p>
                         </div>
 
@@ -298,7 +391,9 @@
 
             <p class="section-subtitle">TRAVEL SUPPORT</p>
 
+
             <h2 class="h2 section-title">Planifiez votre voyage en toute confiance</h2>
+
 
 
             <div class="plan__grid">
@@ -306,6 +401,7 @@
                     <span class="number">01</span>
                     <h4>Travel Requirements for Dubai</h4>
                     <p>
+
                         Exigences de voyage pour Dubaï
                         Restez informé et préparé pour votre voyage à Dubaï grâce aux exigences de voyage essentielles,
                         garantissant une expérience fluide et sans tracas dans cette ville dynamique et captivante.
@@ -323,6 +419,7 @@
                         Restez informé et planifiez votre voyage en toute simplicité,
                         car nous fournissons des informations à jour sur les exigences 
                         de voyage spécifiques à vos destinations désirées.
+
                     </p>
                 </div>
                 <div class="plan__image">
@@ -355,6 +452,7 @@
             border-radius: 5px; /* Add border-radius for rounded corners */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow for a subtle effect */
         }
+
 
         .suggestion-item {
             padding: 8px;
@@ -507,6 +605,7 @@
             });
         });
     </script>
+<<<<<<< HEAD
     <!-- Script JavaScript -->
     <!-- Script JavaScript -->
     <!-- Script JavaScript -->
@@ -687,6 +786,101 @@
                 }
             });
         }
+
+
+
+  
+        function convertDurationToMinutes(duration) {
+            const regex = /PT(\d+)H(\d+)M/;
+            const match = duration.match(regex);
+
+            if (match) {
+                const hours = parseInt(match[1]) || 0;
+                const minutes = parseInt(match[2]) || 0;
+                return hours * 60 + minutes;
+            }
+
+            return 0;
+        }
+
+        function sortFlights() {
+            var sortBy = document.getElementById("sort-by").value;
+            var sortOrder = document.getElementById("sort-order").value;
+            var flightsContainer = document.querySelector('.popular-list');
+
+            // Convert the NodeList to an array for easier manipulation
+            var flights = Array.from(document.querySelectorAll('.popular-card'));
+
+            flights.sort(function (a, b) {
+                var aValue, bValue;
+
+                switch (sortBy) {
+                    case "price":
+                        aValue = parseFloat(a.querySelector('.card-price').innerText.match(/\d+\.\d+/)[0]);
+                        bValue = parseFloat(b.querySelector('.card-price').innerText.match(/\d+\.\d+/)[0]);
+                        break;
+                    case "duration":
+                        aValue = convertDurationToMinutes(a.querySelector('.totalDurationforSort').value);
+                        bValue = convertDurationToMinutes(b.querySelector('.totalDurationforSort').value);
+                        break;
+                    case "stops":
+                        aValue = parseInt(a.querySelector('.totalStops').innerText.match(/\d+/)[0]);
+                        bValue = parseInt(b.querySelector('.totalStops').innerText.match(/\d+/)[0]);
+                        break;
+                    default:
+                        return 0;
+                }
+
+                return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+            });
+
+            // Clear the current content in the container
+            flightsContainer.innerHTML = '';
+
+            // Append the sorted flights to the container
+            flights.forEach(function (flight) {
+                flightsContainer.appendChild(flight);
+            });
+        }
+
+
+        function formatDuration(duration) {
+            const regex = /PT(\d*)H(\d*)M/;
+            const match = duration.match(regex);
+
+            if (match) {
+                const hours = parseInt(match[1]) || 0;
+                const minutes = parseInt(match[2]) || 0;
+
+                if (hours > 0 && minutes > 0) {
+                    return hours + " hours and " + minutes + " minutes";
+                } else if (hours > 0) {
+                    return hours + " hours";
+                } else if (minutes > 0) {
+                    return minutes + " minutes";
+                } else {
+                    return "0 minutes";
+                }
+            }
+
+            return duration;
+        }
+
+        // Function to format all elements with class 'durationToBeformatter'
+        function formatAllDurations() {
+            const elements = document.querySelectorAll('.durationToBeformatter');
+            elements.forEach(element => {
+                const originalDuration = element.textContent;
+                const formattedDuration = formatDuration(originalDuration);
+                element.textContent = formattedDuration;
+            });
+        }
+
+        // Call the function after the document is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            formatAllDurations();
+        });
+
     </script>
 
 </body>
