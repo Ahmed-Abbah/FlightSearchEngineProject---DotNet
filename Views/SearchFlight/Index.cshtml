@@ -75,7 +75,7 @@
                     <div class="input__group">
 
                         <input type="text" name="ArrivalCity" style="margin-top: 35px;" id="arrivalCity" value="@TempData["ArrivalCity"]" required />
-
+                        <label for="ArrivalCity">Ville de retour</label>
                         <div id="arrivalSuggestions" class="suggestions-container"></div>
                     </div>
                     <p>Saisir la ville d'arrivé</p>
@@ -113,7 +113,7 @@
                     <div class="input__group">
 
 
-                        <input type="date" style="margin-top: 35px;"  name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]" required />
+                        <input type="date" style="margin-top: 35px;"  name="ReturnDate" id="returnDate" value="@TempData["ReturnDate"]"  />
 
 
                         <label for="returnDate">Date de Retour</label>
@@ -160,7 +160,7 @@
 
             @if (Model != null && Model.Any())
             {
-                <div class="form__group">
+                <div class="form__group" style="display:flex;">
 
                     <select id="filterOptions" class="btn" style="margin-left: 20px;" onchange="applyFilters()">
                         <option value="all">Tous les vols</option>
@@ -181,9 +181,8 @@
                         <option value="asc">Ascending</option>
                         <option value="desc">Descending</option>
                     </select>
-                    <p id="filterResultsCount"></p>
-                
-                    <button onclick="applyFilters()" class="btn" style="background-color:hsl(47, 98%, 50%);margin-left:180px;"><i class="ri-search-line"></i> Filtrer les offres</button>
+                    <p class="btn" id="filterResultsCount" style="color:black;margin-left:100px;"></p>
+
                 </div>
               
 
@@ -193,9 +192,7 @@
 
                     @foreach (var flight in Model)
                     {
-                        @*                        <li class="flight-item" data-stops="@(flight.Itineraries.Count > 1 ? "avec-escale" : "direct")"> *@
-                        @*    <li class="flight-item" data-departure-time="@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At">
-                *@
+                   
                         var stopsAttribute = (flight.Itineraries[0].Segments.Count > 1 ? "avec-escale" : "direct");
                         <li class="flight-item" data-stops="@stopsAttribute" data-departure-time="@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At"
                             data-arrival-time="@flight.Itineraries[0].Segments.LastOrDefault()?.Arrival.At">
@@ -205,19 +202,20 @@
                                          alt="Flight Image" class="img-cover">
                                     <span class="card-badge">
                                         <ion-icon name="time-outline"></ion-icon>
-                                        <time datetime="@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At">
+                                     @*    <time datetime="@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At">
                                             @flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At
+                                        </time>
+ *@
+                                        <time datetime="@FormatDateTime(flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At)">
+                                            @FormatDateTime(flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.At)
                                         </time>
                                     </span>
                                 </figure>
 
                                 <div class="card-content">
+                                  
                                     <div class="card-wrapper">
-
-                                        <div>#this div for test only#(flight id: @flight.Id)</div>
-                                    </div>
-                                    <div class="card-wrapper">
-                                        <div class="card-price">From $@flight.Price.Total @flight.Price.Currency</div>
+                                        <div class="card-price">A partir de $@flight.Price.Total @flight.Price.Currency</div>
 
                                     </div>
 
@@ -225,26 +223,26 @@
                                         <a href="#">@flight.Itineraries.FirstOrDefault()?.Segments.FirstOrDefault()?.Departure.IataCode to @flight.Itineraries.FirstOrDefault()?.Segments.LastOrDefault()?.Arrival.IataCode</a>
                                     </h3>
 
+                                
+                                    <address class="card-location">Date d'arrivée': @FormatDateTime(@flight.Itineraries[0].Segments.LastOrDefault()?.Arrival.At)</address>
 
-                                    <address class="card-location">Return Date: >@flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
-                                    
-
-                                    <address class="card-location">Return Date: @flight.Itineraries.LastOrDefault()?.Segments.LastOrDefault()?.Arrival.At</address>
                                     
                                     <a class="durationToBeformatter">@flight.Itineraries.FirstOrDefault()?.Duration</a>
-                                    <button class="show-itinerary-button">Show Itinerary Details</button>
-                                    <div class="itinerary-container" style="display:none;">
+                
+
+                                    <button class="show-itinerary-button" style="margin-top:15px;" >Afficher  Details</button>
+                                    <div class="itinerary-container" style="display:none;margin-top:30px;" >
                                         @for (int i = 0; i < flight.Itineraries.Count; i++)
                                         { 
                                             var itinerary = flight.Itineraries[i];
                                             <div class="itinerary-details">
                                                 @if (i == 0)
                                                 {
-                                                    <h4>One Way Flight Details</h4>
+                                                    <h4> Details de départ du vol</h4>
                                                 }
                                                 else if (i == 1)
                                                 {
-                                                    <h4>Return Flight Details</h4>
+                                                    <h4> Details de retour du vol</h4>
                                                 }
                                                 else
                                                 {
@@ -258,12 +256,12 @@
                                                 
                                                     @if (itinerary.Segments.Count - 1 == 0)
                                                     {
-                                                    <p>Direct<span class='totalStops' style="display:none;">@(itinerary.Segments.Count - 1)</span></p>
+                                                    <p style="color:brown">Vol direct <span class='totalStops' style="display:none;">@(itinerary.Segments.Count - 1)</span></p>
                                                     ;
                                                     }
                                                     else
                                                     {
-                                                       <p>Stop(s): <span class='totalStops'>@(itinerary.Segments.Count - 1)</span></p>
+                                                    <p style="color:brown">Vol avec escale et le nombre du stops est  <span  style="color:blue" class='totalStops'>@(itinerary.Segments.Count - 1)</span></p>
                                                     }
 
 
@@ -274,17 +272,20 @@
                                                     {
                                                         <li>
                                                             <div class="segment-details" >
-                                                                <p>*Departure: @segment.Departure.IataCode</p>
-                                                                <p>--Departure Time: @segment.Departure.At</p>
+                                                                <p style="color:cadetblue">*Départ: @segment.Departure.IataCode</p>
+                                                                <p>--Temps de départ: @FormatDateTime(segment.Departure.At)</p>
+
                                                                 <p class="durationToBeformatter">--Duration: @segment.Duration</p>
-                                                                <p>*Arrival: @segment.Arrival.IataCode</p>
+                                                                <p style="color:cornflowerblue">*Arrivée: @segment.Arrival.IataCode</p>
                                                                 @if (i == 0)
                                                                 {
-                                                                    <p>--Arrival Time: <span class="flightArrivalTime">@segment.Arrival.At</span></p>
+                                                                    <p>--Temps d'arrivée: <span class="flightArrivalTime">@FormatDateTime(segment.Arrival.At)</span></p>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <p>--Arrival Time: @segment.Arrival.At</p>
+                                                                    
+                                                                    <p>--Temps d'arrivée : @FormatDateTime(segment.Arrival.At)</p>
+
                                                                 }
 
                                                                
@@ -713,6 +714,17 @@
             filterResultsCountElement.innerText = filteredResultsCount + " Résultat(s) trouvé.";
         }
 
+        @functions {
+            public string FormatDateTime(string dateTime)
+            {
+                if (DateTime.TryParse(dateTime, out var parsedDateTime))
+                {
+                    return parsedDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                }
+
+                return string.Empty;
+            }
+        }
 
     
         
